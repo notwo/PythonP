@@ -18,25 +18,34 @@ class CustomerDialog(tk.Frame):
         self.notebook.add(self.reg_tab, text="顧客情報登録", padding=2)
         self.notebook.add(self.lst_tab, text="顧客一覧", padding=2)
         self.notebook.pack()
-        # for register tab
-        self.reg_form_frame = tk.Frame(self.reg_tab)
-        self.reg_form_frame.pack(fill=tk.BOTH)
         ### sub widgets ###
-        self.nameBoxLabel = tk.Label(self.reg_form_frame, text="氏名")
-        self.nameBoxLabel.pack(side="left")
-        self.nameBox = tk.Entry(self.reg_form_frame)
-        self.nameBox.pack()
-        self.telBoxLabel = tk.Label(self.reg_form_frame, text="電話番号")
-        self.telBoxLabel.pack(side="left")
-        self.telBox = tk.Entry(self.reg_form_frame)
-        self.telBox.pack()
-        self.addressBoxLabel = tk.Label(self.reg_form_frame, text="住所")
-        self.addressBoxLabel.pack(side="left")
-        self.addressBox = tk.Entry(self.reg_form_frame)
-        self.addressBox.pack()
-        self.register = tk.Button(self.reg_form_frame, text="登録",)
+        #### name ####
+        self.namebox_frame = tk.Frame(self.reg_tab, padx=10)
+        self.namebox_frame.pack(fill=tk.BOTH)
+        self.nameboxlabel = tk.Label(self.namebox_frame, text="氏名")
+        self.nameboxlabel.pack(fill="x")
+        self.namebox = tk.Entry(self.namebox_frame)
+        self.namebox.pack()
+        #### tel ####
+        self.telbox_frame = tk.Frame(self.reg_tab, padx=10)
+        self.telbox_frame.pack(fill=tk.BOTH)
+        self.telboxLabel = tk.Label(self.telbox_frame, text="電話番号")
+        self.telboxLabel.pack()
+        self.telbox = tk.Entry(self.telbox_frame)
+        self.telbox.pack()
+        #### address ####
+        self.addressbox_frame = tk.Frame(self.reg_tab, padx=10)
+        self.addressbox_frame.pack(fill=tk.BOTH)
+        self.addressboxlabel = tk.Label(self.addressbox_frame, text="住所")
+        self.addressboxlabel.pack()
+        self.addressbox = tk.Entry(self.addressbox_frame)
+        self.addressbox.pack()
+        #### reg button ####
+        self.reg_button_frame = tk.Frame(self.reg_tab, padx=10)
+        self.reg_button_frame.pack(fill=tk.BOTH)
+        self.register = tk.Button(self.reg_button_frame, text="登録",)
         self.register.bind("<ButtonPress>", button_events.bev)
-        self.register.pack(side="right")
+        self.register.pack()
         ### /sub widgets ###
         # for list tab
         
