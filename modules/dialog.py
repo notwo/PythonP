@@ -2,17 +2,28 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import modules.customer_listbox as customer_listbox
 import modules.button_events as button_events
+import os
 
-class CustomerDialog(tk.Frame):
+OUT_CSV = "customer.csv"
+
+class __CustomerDialog(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master.title('顧客管理テスト')
-        self.pack()
-        self.set_widgets()
 
-    def set_widgets(self):
+        # instance variables
+        self.customers = []
+        self.csv = ""
+
+        # set view
+        self.pack()
+        self.read_csv()
+        self.set_list()
+        self.set_form_widgets()
+
+    def set_form_widgets(self):
         # tabs
-        self.notebook = ttk.Notebook(width=1000, height=600)
+        self.notebook = ttk.Notebook(width=900, height=500)
         self.reg_tab = tk.Frame(self.notebook)
         self.lst_tab = tk.Frame(self.notebook)
         self.notebook.add(self.reg_tab, text="顧客情報登録", padding=2)
@@ -52,8 +63,29 @@ class CustomerDialog(tk.Frame):
         ### /sub widgets ###
         # for list tab
         
+    def read_csv(self):
+        crnt_dir = os.path.dirname(os.path.abspath(__file__))
+        target_file_path = "../"
+        self.csv = os.path.join(crnt_dir, target_file_path)
+        if not os.path.exists(self.csv + OUT_CSV):
+            self.__write_header()
 
+        f = open(self.csv + OUT_CSV, 'r')
+        # read header info
+        str = f.readline()
+        while str:
+            str = f.readline()
+            self.customers.append(str)
+        f.close()
+    
+    def set_list(self):
+        ""
+
+    def __write_header(self):
+        f = open(self.csv + OUT_CSV, 'w')
+        f.write("氏名,電話番号,住所,前回の注文")
+        f.close()
 
 root = tk.Tk()
-root.geometry("1024x640")
-dialog = CustomerDialog(master=root)
+root.geometry("946x540")
+dialog = __CustomerDialog(master=root)
