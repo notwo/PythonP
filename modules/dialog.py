@@ -39,26 +39,34 @@ class __CustomerDialog(tk.Frame):
         self.nameboxlabel.pack(side="left")
         self.namebox = tk.Entry(self.reg_frame)
         self.namebox.pack(side="left")
-        #### tel ####
-        self.telboxLabel = ttk.Label(self.reg_frame, text="電話番号", padding=(15, 10, 3, 10))
-        self.telboxLabel.pack(side="left")
-        self.telbox = tk.Entry(self.reg_frame)
-        self.telbox.pack(side="left")
+        #### zip code ####
+        self.zipcode_label = ttk.Label(self.reg_frame, text="郵便番号", padding=(15, 10, 3, 10))
+        self.zipcode_label.pack(side="left")
+        self.zipcode_box_1 = tk.Entry(self.reg_frame, width=7)
+        self.zipcode_box_1.pack(side="left")
+        self.hyphen_label = ttk.Label(self.reg_frame, text="-", padding=(3, 10, 3, 10))
+        self.hyphen_label.pack(side="left")
+        self.zipcode_box_2 = tk.Entry(self.reg_frame, width=12)
+        self.zipcode_box_2.pack(side="left")
         #### address ####
         self.addressboxlabel = ttk.Label(self.reg_frame, text="住所", padding=(15, 10, 3, 10))
         self.addressboxlabel.pack(side="left")
         self.addressbox = tk.Entry(self.reg_frame)
         self.addressbox.pack(side="left")
-        #### prev order ####
-        self.prev_order_label = ttk.Label(self.reg_frame, text="前回の注文", padding=(15, 10, 3, 10))
-        self.prev_order_label.pack(side="left")
-        self.prev_order_box = tk.Entry(self.reg_frame, width=30)
-        self.prev_order_box.pack(side="left")
-        #### reg button ####
+        #### tel ####
+        self.telboxLabel = ttk.Label(self.reg_frame, text="電話番号", padding=(15, 10, 3, 10))
+        self.telboxLabel.pack(side="left")
+        self.telbox = tk.Entry(self.reg_frame)
+        self.telbox.pack(side="left")
+        #### order details button ####
         self.button_frame = tk.Frame(self.reg_tab, pady=8)
         self.button_frame.pack(fill=tk.BOTH)
+        self.sendto = tk.Button(self.button_frame, text="送り先情報を入力する", width=5, height=2, padx=44, pady=1)
+        self.sendto.bind("<ButtonPress>", button_events.sendto_handler)
+        self.sendto.pack()
+        #### reg button ####
         self.register = tk.Button(self.button_frame, text="登録", width=5, height=2, padx=44, pady=1)
-        self.register.bind("<ButtonPress>", button_events.bev)
+        self.register.bind("<ButtonPress>", button_events.reg_handler)
         self.register.pack()
         ### /sub widgets ###
         # for list tab
@@ -83,7 +91,7 @@ class __CustomerDialog(tk.Frame):
 
     def __write_header(self):
         f = open(self.csv + OUT_CSV, 'w')
-        f.write("氏名,電話番号,住所,前回の注文")
+        f.write("お客様氏名,郵便番号,住所,電話番号,送り先情報")
         f.close()
 
 root = tk.Tk()
