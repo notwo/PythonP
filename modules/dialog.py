@@ -6,7 +6,7 @@ import os
 
 OUT_CSV = "customer.csv"
 
-class __CustomerDialog(tk.Frame):
+class CustomerDialog(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         # TODO: change it later...!
@@ -113,7 +113,3 @@ class __CustomerDialog(tk.Frame):
         f = open(self.csv + OUT_CSV, 'w')
         f.write("お客様氏名,郵便番号,住所,電話番号,送り先情報")
         f.close()
-
-root = tk.Tk()
-root.geometry("946x540")
-dialog = __CustomerDialog(master=root)
