@@ -51,12 +51,12 @@ class CustomerDialog(tk.Frame):
         #### zip code ####
         self.zipcode_label = ttk.Label(self.reg_frame2, text="郵便番号", padding=(185, 10, 3, 10))
         self.zipcode_label.pack(side="left")
-        self.zipcode_box_1 = tk.Entry(self.reg_frame2, width=7)
-        self.zipcode_box_1.pack(side="left")
+        self.zipcode_box1 = tk.Entry(self.reg_frame2, width=7)
+        self.zipcode_box1.pack(side="left")
         self.hyphen_label = ttk.Label(self.reg_frame2, text="-", padding=(1, 10, 3, 10))
         self.hyphen_label.pack(side="left")
-        self.zipcode_box_2 = tk.Entry(self.reg_frame2, width=12)
-        self.zipcode_box_2.pack(side="left")
+        self.zipcode_box2 = tk.Entry(self.reg_frame2, width=12)
+        self.zipcode_box2.pack(side="left")
         #### address ####
         self.addressboxlabel = ttk.Label(self.reg_frame3, text="住所", padding=(209, 10, 3, 10))
         self.addressboxlabel.pack(side="left")
@@ -64,8 +64,8 @@ class CustomerDialog(tk.Frame):
         self.addressbox.pack(side="left")
         self.addressboxlabel2 = ttk.Label(self.reg_frame4, text="番地・号・建物名・部屋番号", padding=(96, 10, 3, 10))
         self.addressboxlabel2.pack(side="left")
-        self.addressbox = tk.Entry(self.reg_frame4, width=65)
-        self.addressbox.pack(side="left")
+        self.addressbox2 = tk.Entry(self.reg_frame4, width=65)
+        self.addressbox2.pack(side="left")
         #### tel ####
         self.telboxLabel = ttk.Label(self.reg_frame5, text="電話番号", padding=(185, 10, 3, 10))
         self.telboxLabel.pack(side="left")
