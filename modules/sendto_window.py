@@ -27,6 +27,10 @@ class SendToWindow(tk.Frame):
         win.reg_frame6.pack(fill=tk.BOTH)
         win.reg_frame7 = tk.Frame(win, padx=10, pady=10)
         win.reg_frame7.pack(fill=tk.BOTH)
+        win.reg_frame8 = tk.Frame(win, padx=10, pady=10)
+        win.reg_frame8.pack(fill=tk.BOTH)
+        win.reg_frame9 = tk.Frame(win, padx=10, pady=10)
+        win.reg_frame9.pack(fill=tk.BOTH)
         #### check same as address? ####
         self.chkval = tk.BooleanVar()
         self.chkval.set(False)
@@ -60,12 +64,22 @@ class SendToWindow(tk.Frame):
         win.telboxLabel.pack(side="left")
         win.telbox = tk.Entry(win.reg_frame6)
         win.telbox.pack(side="left")
+        #### date ####
+        win.dateboxLabel = ttk.Label(win.reg_frame7, text="日付", padding=(138, 10, 3, 10))
+        win.dateboxLabel.pack(side="left")
+        win.datebox = tk.Entry(win.reg_frame7)
+        win.datebox.pack(side="left")
+        #### order ####
+        win.orderboxLabel = ttk.Label(win.reg_frame8, text="注文内容", padding=(115, 10, 3, 10))
+        win.orderboxLabel.pack(side="left")
+        win.orderbox = tk.Entry(win.reg_frame8, width=65)
+        win.orderbox.pack(side="left")
         #### ok & close button ####
-        win.ok = tk.Button(win.reg_frame7, text="OK", width=5, height=2, padx=44, pady=1)
+        win.ok = tk.Button(win.reg_frame9, text="OK", width=5, height=2, padx=44, pady=1)
         win.ok.bind("<ButtonPress>", self.__close_window)
         win.ok.pack()
         #### cancel & close button ####
-        win.cancel = tk.Button(win.reg_frame7, text="Cancel", width=5, height=2, padx=44, pady=1)
+        win.cancel = tk.Button(win.reg_frame9, text="Cancel", width=5, height=2, padx=44, pady=1)
         win.cancel.bind("<ButtonPress>", self.__close_window)
         win.cancel.pack()
         self.win = win
