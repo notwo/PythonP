@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from modules import customer_listbox
+from modules import sendto_window as swin
 import os
 
 OUT_CSV = "customer.csv"
@@ -29,7 +30,7 @@ class __CustomerDialog(tk.Frame):
         self.notebook.add(self.reg_tab, text="顧客情報登録", padding=2)
         self.notebook.add(self.lst_tab, text="顧客一覧", padding=2)
         self.notebook.pack()
-        ### sub widgets ###
+        ### frame ###
         self.reg_frame = tk.Frame(self.reg_tab, padx=10, pady=10)
         self.reg_frame.pack(fill=tk.BOTH)
         self.reg_frame2 = tk.Frame(self.reg_tab, padx=10, pady=10)
@@ -103,11 +104,7 @@ class __CustomerDialog(tk.Frame):
 
     ##### events #####
     def __open_sendto_window(self, event):
-        win = tk.Toplevel(self)
-        win.transient(self.master)
-        win.geometry("640x480")
-        win.title("送り先情報入力")
-        win.grab_set()
+        swin.SendToWindow(self)
 
     def reg_handler(self, event):
         ""
