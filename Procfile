@@ -1,1 +1,1 @@
-web: gunicorn testpythonmenu.wsgi
+web: gunicorn myMenu.wsgi
