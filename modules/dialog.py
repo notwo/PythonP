@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from modules import customer_listbox
+from modules import customer_listbox as listbox
 from modules import sendto_window as swin
 import os
 
@@ -19,10 +19,11 @@ class CustomerDialog(tk.Frame):
         # set view
         self.pack()
         self.__read_csv()
-        self.__set_list()
+        self.__set_frame()
         self.__set_form_widgets()
+        self.__set_list()
 
-    def __set_form_widgets(self):
+    def __set_frame(self):
         # tabs
         self.notebook = ttk.Notebook(width=900, height=500)
         self.reg_tab = tk.Frame(self.notebook)
@@ -41,8 +42,10 @@ class CustomerDialog(tk.Frame):
         self.reg_frame4.pack(fill=tk.BOTH)
         self.reg_frame5 = tk.Frame(self.reg_tab, padx=10, pady=10)
         self.reg_frame5.pack(fill=tk.BOTH)
-        self.list_frame = tk.Frame(self.reg_tab, padx=10)
+        self.list_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
         self.list_frame.pack(fill=tk.BOTH)
+
+    def __set_form_widgets(self):
         #### name ####
         self.nameboxlabel = ttk.Label(self.reg_frame, text="お客様氏名", padding=(175, 10, 3, 10))
         self.nameboxlabel.pack(side="left")
@@ -82,7 +85,10 @@ class CustomerDialog(tk.Frame):
         self.register.bind("<ButtonPress>", self.reg_handler)
         self.register.pack()
         ### /sub widgets ###
-        # for list tab
+
+    def __set_list(self):
+        self.listbox = listbox.CustomerListBox(self, key={'frame': self.list_frame})
+        self.listbox.pack()
 
     def __read_csv(self):
         crnt_dir = os.path.dirname(os.path.abspath(__file__))
@@ -99,9 +105,6 @@ class CustomerDialog(tk.Frame):
             self.customers.append(str)
         f.close()
     
-    def __set_list(self):
-        ""
-
     ##### events #####
     def __open_sendto_window(self, event):
         swin.SendToWindow(self)
