@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import filedialog as fd
 from modules import customer_listbox as listbox
 from modules import sendto_window as swin
 import os
@@ -44,6 +45,8 @@ class CustomerDialog(tk.Frame):
         self.reg_frame5.pack(fill=tk.BOTH)
         self.list_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
         self.list_frame.pack(fill=tk.BOTH)
+        self.button_frame = tk.Frame(self.reg_tab, pady=8)
+        self.button_frame.pack(fill=tk.BOTH)
 
     def __set_form_widgets(self):
         #### name ####
@@ -75,15 +78,16 @@ class CustomerDialog(tk.Frame):
         self.telbox = tk.Entry(self.reg_frame5)
         self.telbox.pack(side="left")
         #### order details button ####
-        self.button_frame = tk.Frame(self.reg_tab, pady=8)
-        self.button_frame.pack(fill=tk.BOTH)
         self.sendto = tk.Button(self.button_frame, text="送り先情報を入力する", width=5, height=2, padx=44, pady=1)
         self.sendto.bind("<ButtonPress>", self.__open_sendto_window)
         self.sendto.pack()
         #### reg button ####
         self.register = tk.Button(self.button_frame, text="登録", width=5, height=2, padx=44, pady=1)
-        self.register.bind("<ButtonPress>", self.reg_handler)
+        self.register.bind("<ButtonPress>", self.__write_csv)
         self.register.pack()
+        self.download = tk.Button(self.button_frame, text="顧客ファイルダウンロード", width=5, height=2, padx=44, pady=1)
+        self.download.bind("<ButtonPress>", self.__download)
+        self.download.pack()
         ### /sub widgets ###
 
     def __set_list(self):
@@ -109,8 +113,21 @@ class CustomerDialog(tk.Frame):
     def __open_sendto_window(self, event):
         swin.SendToWindow(self)
 
-    def reg_handler(self, event):
-        ""
+    def __download(self, event):
+        data = ''
+        g = (i for i in self.customers)
+        filename = fd.asksaveasfilename()
+        if filename and os.path.exists(self.csv + OUT_CSV):
+            w = open(filename, 'w')
+            for i in g:
+                data += i
+            w.write(data)
+            w.close()
+
+    def __write_csv(self, event):
+        self.listbox.insert(tk.END, self.customers)
+        f = open(self.csv + OUT_CSV, 'a')
+        f.close()
 
     def __write_header(self):
         f = open(self.csv + OUT_CSV, 'w')
