@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog as fd
+from tkinter import messagebox as mbox
 from modules import customer_listbox as listbox
 from modules import sendto_window as swin
 import os
@@ -16,15 +17,16 @@ class CustomerDialog(tk.Frame):
 
         # instance variables
         self.customers = []
-        self.csv = ""
+        crnt_dir = os.path.abspath('./data/')
+        self.csv = os.path.join(crnt_dir, OUT_CSV)
 
         # set view
         self.pack()
         self.__first_open()
-        self.__read_csv()
         self.__set_frame()
         self.__set_form_widgets()
         self.__set_list()
+        self.__read_csv()
 
     def __set_frame(self):
         # tabs
@@ -102,8 +104,8 @@ class CustomerDialog(tk.Frame):
     def __read_csv(self):
         crnt_dir = os.path.abspath('./data/')
         csv = os.path.join(crnt_dir, OUT_CSV)
-        if not os.path.exists(csv):
-            self.__write_header(csv)
+        if not os.path.exists(self.csv):
+            self.__write_header()
 
         f = open(csv, 'r')
         # read header info
@@ -111,6 +113,7 @@ class CustomerDialog(tk.Frame):
         while str:
             str = f.readline()
             self.customers.append(str)
+            self.listbox.insert(tk.END, str)
         f.close()
     
     ##### events #####
@@ -118,11 +121,21 @@ class CustomerDialog(tk.Frame):
         swin.SendToWindow(self)
 
     def __write_csv(self, event):
-        self.listbox.insert(tk.END, self.customers)
-        f = open(self.csv + OUT_CSV, 'a')
+        #if ():
+        #    mbox.showwarning('', '情報が不足しています。')
+        #    return
+        str = "\n" + \
+            self.namebox.get() + "," + \
+            self.zipcode_box1.get() + "-" + self.zipcode_box2.get() + "," + \
+            self.addressbox.get() + "　" + self.addressbox2.get() + "," + \
+            self.telbox.get()
+        self.customers.append(str)
+        self.listbox.insert(tk.END, self.customers[-1])
+        f = open(self.csv, 'a')
+        f.write(self.customers[-1])
         f.close()
 
-    def __write_header(self, csv):
-        f = open(csv, 'w')
+    def __write_header(self):
+        f = open(self.csv, 'w')
         f.write(CSV_HEADER)
         f.close()
