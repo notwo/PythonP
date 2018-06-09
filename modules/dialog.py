@@ -5,6 +5,7 @@ from modules import customer_listbox as listbox
 from modules import sendto_window as swin
 import os
 
+CSV_HEADER = "お客様氏名,郵便番号,住所,電話番号,送り先情報"
 OUT_CSV = "customer.csv"
 
 class CustomerDialog(tk.Frame):
@@ -19,6 +20,7 @@ class CustomerDialog(tk.Frame):
 
         # set view
         self.pack()
+        self.__first_open()
         self.__read_csv()
         self.__set_frame()
         self.__set_form_widgets()
@@ -85,23 +87,25 @@ class CustomerDialog(tk.Frame):
         self.register = tk.Button(self.button_frame, text="登録", width=5, height=2, padx=44, pady=1)
         self.register.bind("<ButtonPress>", self.__write_csv)
         self.register.pack()
-        self.download = tk.Button(self.button_frame, text="顧客ファイルダウンロード", width=5, height=2, padx=44, pady=1)
-        self.download.bind("<ButtonPress>", self.__download)
-        self.download.pack()
         ### /sub widgets ###
 
     def __set_list(self):
         self.listbox = listbox.CustomerListBox(self, key={'frame': self.list_frame})
         self.listbox.pack()
 
-    def __read_csv(self):
-        crnt_dir = os.path.dirname(os.path.abspath(__file__))
-        target_file_path = "../"
-        self.csv = os.path.join(crnt_dir, target_file_path)
-        if not os.path.exists(self.csv + OUT_CSV):
-            self.__write_header()
+    def __first_open(self):
+        crnt_dir = os.path.abspath('./')
+        path = os.path.join(crnt_dir, 'data')
+        if not os.path.isdir(path):
+            os.mkdir(path)
 
-        f = open(self.csv + OUT_CSV, 'r')
+    def __read_csv(self):
+        crnt_dir = os.path.abspath('./data/')
+        csv = os.path.join(crnt_dir, OUT_CSV)
+        if not os.path.exists(csv):
+            self.__write_header(csv)
+
+        f = open(csv, 'r')
         # read header info
         str = f.readline()
         while str:
@@ -113,23 +117,12 @@ class CustomerDialog(tk.Frame):
     def __open_sendto_window(self, event):
         swin.SendToWindow(self)
 
-    def __download(self, event):
-        data = ''
-        g = (i for i in self.customers)
-        filename = fd.asksaveasfilename()
-        if filename and os.path.exists(self.csv + OUT_CSV):
-            w = open(filename, 'w')
-            for i in g:
-                data += i
-            w.write(data)
-            w.close()
-
     def __write_csv(self, event):
         self.listbox.insert(tk.END, self.customers)
         f = open(self.csv + OUT_CSV, 'a')
         f.close()
 
-    def __write_header(self):
-        f = open(self.csv + OUT_CSV, 'w')
-        f.write("お客様氏名,郵便番号,住所,電話番号,送り先情報")
+    def __write_header(self, csv):
+        f = open(csv, 'w')
+        f.write(CSV_HEADER)
         f.close()
