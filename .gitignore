@@ -1,3 +1,4 @@
-menu/__pycache__
-.idea/
+menu/__pycache__/*
+myMenu/__pycache__/*
+.idea/*
 .DS_Store
