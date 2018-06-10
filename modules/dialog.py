@@ -2,12 +2,13 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter import messagebox as mbox
-#from modules import customer_listbox as listbox
 from modules import data_table as table
 from modules import sendto_window as swin
 import os
+import re
 
 CSV_HEADER = "お客様氏名,郵便番号,住所,電話番号,送り先情報"
+COLUMN_WIDTH_LIST = [115, 95, 300, 125]
 OUT_CSV = "customer.csv"
 
 class CustomerDialog(tk.Frame):
@@ -29,7 +30,6 @@ class CustomerDialog(tk.Frame):
         self.__set_frame()
         self.__set_treeview()
         self.__set_form_widgets()
-        #self.__set_list()
 
     def __set_frame(self):
         # tabs
@@ -106,7 +106,7 @@ class CustomerDialog(tk.Frame):
         self.tree = table.DataTable(self, key={ \
             'frame': self.tree_frame, \
             'size': 4, \
-            'column_width': [115, 95, 300, 125], \
+            'column_width': COLUMN_WIDTH_LIST, \
             'headings': ['お客様氏名', '郵便番号', '住所', '電話番号'], \
             'data': self.customers \
         })
@@ -130,8 +130,9 @@ class CustomerDialog(tk.Frame):
         while str:
             str = f.readline()
             self.customers.append(str.split(','))
-            #self.listbox.insert(tk.END, str)
         f.close()
+        # delete unknown last empty items...
+        self.customers.pop()
     
     ##### events #####
     def __open_sendto_window(self, event):
@@ -147,12 +148,17 @@ class CustomerDialog(tk.Frame):
             self.addressbox.get() + "　" + self.addressbox2.get() + "," + \
             self.telbox.get()
         self.customers.append(str)
-        record = str.split(',')
-        self.tree.insert("","end",values=(record))
-        #self.listbox.insert(tk.END, self.customers[-1])
+        record = re.sub('\n|\r\n|\r', '', str).split(',')
+        self.tree.insert("", "end", values=(record))
         f = open(self.csv, 'a')
         f.write(self.customers[-1])
         f.close()
+        # delete all input
+        self.namebox.delete(0, tk.END)
+        self.zipcode_box1.delete(0, tk.END)
+        self.zipcode_box2.delete(0, tk.END)
+        self.addressbox.delete(0, tk.END)
+        self.telbox.delete(0, tk.END)
 
     def __write_header(self):
         f = open(self.csv, 'w')
