@@ -2,7 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter import messagebox as mbox
-from modules import customer_listbox as listbox
+#from modules import customer_listbox as listbox
+from modules import data_table as table
 from modules import sendto_window as swin
 import os
 
@@ -17,16 +18,18 @@ class CustomerDialog(tk.Frame):
 
         # instance variables
         self.customers = []
+        self.tree = None
         crnt_dir = os.path.abspath('./data/')
         self.csv = os.path.join(crnt_dir, OUT_CSV)
 
         # set view
         self.pack()
         self.__first_open()
-        self.__set_frame()
-        self.__set_form_widgets()
-        self.__set_list()
         self.__read_csv()
+        self.__set_frame()
+        self.__set_treeview()
+        self.__set_form_widgets()
+        #self.__set_list()
 
     def __set_frame(self):
         # tabs
@@ -49,6 +52,8 @@ class CustomerDialog(tk.Frame):
         self.reg_frame5.pack(fill=tk.BOTH)
         self.list_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
         self.list_frame.pack(fill=tk.BOTH)
+        self.tree_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
+        self.tree_frame.pack(fill=tk.BOTH)
         self.button_frame = tk.Frame(self.reg_tab, pady=8)
         self.button_frame.pack(fill=tk.BOTH)
 
@@ -91,9 +96,21 @@ class CustomerDialog(tk.Frame):
         self.register.pack()
         ### /sub widgets ###
 
+    # maybe unnecessary func...
     def __set_list(self):
-        self.listbox = listbox.CustomerListBox(self, key={'frame': self.list_frame})
-        self.listbox.pack()
+        pass
+        #self.listbox = listbox.CustomerListBox(self, key={'frame': self.list_frame})
+        #self.listbox.pack()
+
+    def __set_treeview(self):
+        self.tree = table.DataTable(self, key={ \
+            'frame': self.tree_frame, \
+            'size': 4, \
+            'column_width': [115, 95, 300, 125], \
+            'headings': ['お客様氏名', '郵便番号', '住所', '電話番号'], \
+            'data': self.customers \
+        })
+        self.tree.pack()
 
     def __first_open(self):
         crnt_dir = os.path.abspath('./')
@@ -112,8 +129,8 @@ class CustomerDialog(tk.Frame):
         str = f.readline()
         while str:
             str = f.readline()
-            self.customers.append(str)
-            self.listbox.insert(tk.END, str)
+            self.customers.append(str.split(','))
+            #self.listbox.insert(tk.END, str)
         f.close()
     
     ##### events #####
@@ -130,7 +147,9 @@ class CustomerDialog(tk.Frame):
             self.addressbox.get() + "　" + self.addressbox2.get() + "," + \
             self.telbox.get()
         self.customers.append(str)
-        self.listbox.insert(tk.END, self.customers[-1])
+        record = str.split(',')
+        self.tree.insert("","end",values=(record))
+        #self.listbox.insert(tk.END, self.customers[-1])
         f = open(self.csv, 'a')
         f.write(self.customers[-1])
         f.close()

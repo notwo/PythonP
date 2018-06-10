@@ -8,6 +8,6 @@ class CustomerListBox(tk.Listbox):
         self.yScroll.pack(side=tk.RIGHT, fill=tk.Y, expand=1)
         self.xScroll = tk.Scrollbar(self.frame, orient=tk.HORIZONTAL)
         self.xScroll.pack(side=tk.BOTTOM, fill=tk.X, expand=1)
-        tk.Listbox.__init__(self, self.frame)
+        tk.Listbox.__init__(self, self.frame, width=80)
         self.xScroll['command'] = self.xview
         self.yScroll['command'] = self.yview
