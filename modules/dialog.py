@@ -158,6 +158,7 @@ class CustomerDialog(tk.Frame):
         self.zipcode_box1.delete(0, tk.END)
         self.zipcode_box2.delete(0, tk.END)
         self.addressbox.delete(0, tk.END)
+        self.addressbox2.delete(0, tk.END)
         self.telbox.delete(0, tk.END)
 
     def __write_header(self):
