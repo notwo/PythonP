@@ -142,17 +142,20 @@ class CustomerDialog(tk.Frame):
         #if ():
         #    mbox.showwarning('', '情報が不足しています。')
         #    return
+        # write file
         str = "\n" + \
             self.namebox.get() + "," + \
             self.zipcode_box1.get() + "-" + self.zipcode_box2.get() + "," + \
             self.addressbox.get() + "　" + self.addressbox2.get() + "," + \
             self.telbox.get()
-        self.customers.append(str)
-        record = re.sub('\n|\r\n|\r', '', str).split(',')
-        self.tree.insert("", "end", values=(record))
         f = open(self.csv, 'a')
-        f.write(self.customers[-1])
+        f.write(str)
         f.close()
+
+        # append to list
+        record = re.sub('\n|\r\n|\r', '', str).split(',')
+        self.customers.append(record)
+        self.tree.insert("", "end", values=(record))
         # delete all input
         self.namebox.delete(0, tk.END)
         self.zipcode_box1.delete(0, tk.END)
