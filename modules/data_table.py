@@ -1,26 +1,24 @@
 from tkinter import ttk
+from modules import edit_window as ewin
 
 class DataTable(ttk.Treeview):
     def __init__(self, master=None, **key):
         super().__init__(master)
         self.sort_mode = []
         self.frame = key.get('key').get('frame')
-        style = ttk.Style()
-        style.configure("Custom.Treeview.Heading", background='#38FFFF')
-        style.map("Custom.Treeview.Heading", relief=[('active','groove'),('pressed','sunken')])
         ttk.Treeview.__init__(self, self.frame)
 
         self.data = key.get('key').get('data')
         size = key.get('key').get('size')
         column_width = key.get('key').get('column_width')
-        headings = key.get('key').get('headings')
-        if len(column_width) != size or len(headings) != size:
+        self.headings = key.get('key').get('headings')
+        if len(column_width) != size or len(self.headings) != size:
             return
         self["columns"] = list(range(1, size + 1))
         self["show"] = "headings"
         for num in range(0, size):
             self.column(num + 1, width=column_width[num])
-            self.heading(num + 1, text=headings[num], command=self.__sort)
+            self.heading(num + 1, text=self.headings[num], command=self.__sort)
             self.sort_mode.append('asc')
         for record in self.data:
             self.insert("","end",values=(record))
@@ -31,6 +29,11 @@ class DataTable(ttk.Treeview):
         record_index = self.focus()
         if record_index:
             record = self.item(record_index)['values']
+            ewin.EditWindow(self, key={ \
+                "record": record, \
+                "data": self.data, \
+                "index": record_index \
+            })
 
     def __sort(self):
         # sort
