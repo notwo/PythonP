@@ -54,6 +54,8 @@ class CustomerDialog(tk.Frame):
         self.list_frame.pack(fill=tk.BOTH)
         self.tree_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
         self.tree_frame.pack(fill=tk.BOTH)
+        self.list_frame2 = tk.Frame(self.lst_tab, padx=10, pady=10)
+        self.list_frame2.pack(fill=tk.BOTH)
         self.button_frame = tk.Frame(self.reg_tab, pady=8)
         self.button_frame.pack(fill=tk.BOTH)
 
@@ -94,6 +96,10 @@ class CustomerDialog(tk.Frame):
         self.register = tk.Button(self.button_frame, text="登録", width=5, height=2, padx=44, pady=1)
         self.register.bind("<ButtonPress>", self.__write_csv)
         self.register.pack()
+        ### delete button ###
+        self.remove = tk.Button(self.list_frame2, text="削除", width=5, height=2, padx=44, pady=1)
+        self.remove.bind("<ButtonPress>", self.__remove_record)
+        self.remove.pack()
         ### /sub widgets ###
 
     # maybe unnecessary func...
@@ -126,14 +132,15 @@ class CustomerDialog(tk.Frame):
 
         f = open(csv, 'r')
         # read header info
-        str = f.readline()
-        while str:
-            str = f.readline()
+        f.readline()
+        lines = f.readlines()
+        for str in lines:
+            # delete unknown last empty items...
+            if str == '\n':
+                continue
             self.customers.append(str.split(','))
         f.close()
-        # delete unknown last empty items...
-        self.customers.pop()
-    
+
     ##### events #####
     def __open_sendto_window(self, event):
         swin.SendToWindow(self)
@@ -167,4 +174,19 @@ class CustomerDialog(tk.Frame):
     def __write_header(self):
         f = open(self.csv, 'w')
         f.write(CSV_HEADER)
+        f.close()
+
+    def __remove_record(self, event):
+        if (self.tree is None or not self.tree.focus()):
+            return
+        # delete & rewrite self.customers
+        delete_index = self.tree.index(self.tree.focus())
+        del self.customers[delete_index]
+        self.tree.delete(self.tree.focus())
+        self.__write_header()
+        f = open(self.csv, 'a')
+        g = (d for d in self.customers)
+        for line in g:
+            str = ','.join(line)
+            f.write('\n' + str)
         f.close()
