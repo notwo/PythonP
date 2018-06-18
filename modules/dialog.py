@@ -52,10 +52,12 @@ class CustomerDialog(tk.Frame):
         self.reg_frame5.pack(fill=tk.BOTH)
         self.list_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
         self.list_frame.pack(fill=tk.BOTH)
+        self.search_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
+        self.search_frame.pack(fill=tk.BOTH)
         self.tree_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
         self.tree_frame.pack(fill=tk.BOTH)
-        self.list_frame2 = tk.Frame(self.lst_tab, padx=10, pady=10)
-        self.list_frame2.pack(fill=tk.BOTH)
+        self.removebutton_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
+        self.removebutton_frame.pack(fill=tk.BOTH)
         self.button_frame = tk.Frame(self.reg_tab, pady=8)
         self.button_frame.pack(fill=tk.BOTH)
 
@@ -88,16 +90,24 @@ class CustomerDialog(tk.Frame):
         self.telboxLabel.pack(side="left")
         self.telbox = tk.Entry(self.reg_frame5)
         self.telbox.pack(side="left")
+        #### search form ####
+        self.searchLabel = ttk.Label(self.search_frame, text="氏名で検索", padding=(115, 10, 3, 10))
+        self.searchLabel.pack(side="left")
+        self.searchBox = tk.Entry(self.search_frame)
+        self.searchBox.pack(side="left", padx=20)
+        self.search = tk.Button(self.search_frame, text="検索", width=4, height=1, padx=14, pady=1)
+        self.search.bind("<ButtonPress>", self.__search_by_name)
+        self.search.pack(side="left")
         #### order details button ####
         self.sendto = tk.Button(self.button_frame, text="送り先情報を入力する", width=5, height=2, padx=44, pady=1)
-        self.sendto.bind("<ButtonPress>", self.__open_sendto_window)
+        self.sendto.bind("<ButtonPress>", self.__search)
         self.sendto.pack()
         #### reg button ####
         self.register = tk.Button(self.button_frame, text="登録", width=5, height=2, padx=44, pady=1)
         self.register.bind("<ButtonPress>", self.__write_csv)
         self.register.pack()
         ### delete button ###
-        self.remove = tk.Button(self.list_frame2, text="削除", width=5, height=2, padx=44, pady=1)
+        self.remove = tk.Button(self.removebutton_frame, text="削除", width=5, height=2, padx=44, pady=1)
         self.remove.bind("<ButtonPress>", self.__remove_record)
         self.remove.pack()
         ### /sub widgets ###
@@ -190,3 +200,6 @@ class CustomerDialog(tk.Frame):
             str = ','.join(line)
             f.write('\n' + str)
         f.close()
+
+    def __search_by_name(self, event):
+        ""
