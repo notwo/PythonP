@@ -19,6 +19,9 @@ class CustomerDialog(tk.Frame):
 
         # instance variables
         self.customers = []
+        self.searched_customers = []
+        self.search_check = None
+        self.chkval = None
         self.tree = None
         crnt_dir = os.path.abspath('./data/')
         self.csv = os.path.join(crnt_dir, OUT_CSV)
@@ -95,12 +98,13 @@ class CustomerDialog(tk.Frame):
         self.searchLabel.pack(side="left")
         self.searchBox = tk.Entry(self.search_frame)
         self.searchBox.pack(side="left", padx=20)
-        self.search = tk.Button(self.search_frame, text="検索", width=4, height=1, padx=14, pady=1)
-        self.search.bind("<ButtonPress>", self.__search_by_name)
-        self.search.pack(side="left")
+        self.chkval = tk.BooleanVar()
+        self.chkval.set(False)
+        self.search_check = ttk.Checkbutton(self.search_frame, text="検索", padding=(0, 10, 10, 1), command=self.__search_by_name, variable=self.chkval)
+        self.search_check.pack(side='left')
         #### order details button ####
         self.sendto = tk.Button(self.button_frame, text="送り先情報を入力する", width=5, height=2, padx=44, pady=1)
-        self.sendto.bind("<ButtonPress>", self.__search)
+        self.sendto.bind("<ButtonPress>", self.__search_by_name)
         self.sendto.pack()
         #### reg button ####
         self.register = tk.Button(self.button_frame, text="登録", width=5, height=2, padx=44, pady=1)
@@ -124,7 +128,8 @@ class CustomerDialog(tk.Frame):
             'size': 4, \
             'column_width': COLUMN_WIDTH_LIST, \
             'headings': ['お客様氏名', '郵便番号', '住所', '電話番号'], \
-            'data': self.customers \
+            'data': self.customers, \
+            'searched_data': self.searched_customers, \
         })
         self.tree.pack()
 
@@ -149,6 +154,7 @@ class CustomerDialog(tk.Frame):
             if str == '\n':
                 continue
             self.customers.append(str.split(','))
+            self.searched_customers.append(str.split(','))
         f.close()
 
     ##### events #####
@@ -201,5 +207,21 @@ class CustomerDialog(tk.Frame):
             f.write('\n' + str)
         f.close()
 
-    def __search_by_name(self, event):
-        ""
+    def __search_by_name(self):
+        search_word = self.searchBox.get()
+        if not search_word:
+            return
+        self.tree.delete(*self.tree.get_children())
+        g = (d for d in self.customers)
+        if self.chkval.get() is True:
+            self.searched_customers = []
+            for record in self.customers:
+                result = re.search(search_word, record[0])
+                if result is not None:
+                    self.searched_customers.append(record)
+                    self.tree.insert("", "end", values=(record))
+        else:
+            self.searched_customers = []
+            for record in self.customers:
+                self.searched_customers.append(record)
+                self.tree.insert("", "end", values=(record))

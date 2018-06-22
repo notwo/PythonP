@@ -9,6 +9,7 @@ class DataTable(ttk.Treeview):
         ttk.Treeview.__init__(self, self.frame)
 
         self.data = key.get('key').get('data')
+        self.searched_data = key.get('key').get('searched_data')
         size = key.get('key').get('size')
         column_width = key.get('key').get('column_width')
         self.headings = key.get('key').get('headings')
@@ -50,7 +51,7 @@ class DataTable(ttk.Treeview):
             self.sort_mode[sort_num - 1] = 'asc'
 
         # specify clicked header and sort
-        g = (d for d in self.data)
+        g = (d for d in self.searched_data)
         for row in g:
             v = row[sort_num - 1]
             hash_for_sort[v] = row
