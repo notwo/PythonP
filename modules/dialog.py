@@ -178,7 +178,9 @@ class CustomerDialog(tk.Frame):
         # append to list
         record = re.sub('\n|\r\n|\r', '', str).split(',')
         self.customers.append(record)
+        self.searched_customers.append(record)
         self.tree.insert("", "end", values=(record))
+        self.tree.update_data(self.customers, self.searched_customers)
         # delete all input
         self.namebox.delete(0, tk.END)
         self.zipcode_box1.delete(0, tk.END)

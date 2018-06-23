@@ -26,6 +26,11 @@ class DataTable(ttk.Treeview):
         # set each row's event
         self.bind('<Double-1>', self.__open_edit)
 
+    def update_data(self, data, searched_data):
+        self.data = data
+        self.searched_data = searched_data
+
+    ##### events #####
     def __open_edit(self, event):
         record_index = self.focus()
         if record_index:
