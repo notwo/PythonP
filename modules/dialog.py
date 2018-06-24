@@ -180,7 +180,8 @@ class CustomerDialog(tk.Frame):
         self.customers.append(record)
         self.searched_customers.append(record)
         self.tree.insert("", "end", values=(record))
-        self.tree.update_data(self.customers, self.searched_customers)
+        self.tree.data = self.customers
+        self.tree.searched_data = self.searched_customers
         # delete all input
         self.namebox.delete(0, tk.END)
         self.zipcode_box1.delete(0, tk.END)
@@ -200,13 +201,17 @@ class CustomerDialog(tk.Frame):
         # delete & rewrite self.customers
         delete_index = self.tree.index(self.tree.focus())
         del self.customers[delete_index]
+        del self.searched_customers[delete_index]
+        self.tree.data = self.customers
+        self.tree.searched_data = self.searched_customers
         self.tree.delete(self.tree.focus())
         self.__write_header()
         f = open(self.csv, 'a')
+        f.write('\n')
         g = (d for d in self.customers)
         for line in g:
             str = ','.join(line)
-            f.write('\n' + str)
+            f.write(str)
         f.close()
 
     def __search_by_name(self):
