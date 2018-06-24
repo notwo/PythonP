@@ -104,7 +104,7 @@ class CustomerDialog(tk.Frame):
         self.search_check.pack(side='left')
         #### order details button ####
         self.sendto = tk.Button(self.button_frame, text="送り先情報を入力する", width=5, height=2, padx=44, pady=1)
-        self.sendto.bind("<ButtonPress>", self.__search_by_name)
+        self.sendto.bind("<ButtonPress>", self.__open_sendto_window)
         self.sendto.pack()
         #### reg button ####
         self.register = tk.Button(self.button_frame, text="登録", width=5, height=2, padx=44, pady=1)
