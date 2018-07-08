@@ -41,39 +41,47 @@ class SendToWindow(tk.Frame):
         win.nameboxlabel.pack(side="left")
         win.namebox = tk.Entry(win.reg_frame2)
         win.namebox.pack(side="left")
+        win.namebox.insert(0, self.master.sendto_name)
         #### zip code ####
         win.zipcode_label = ttk.Label(win.reg_frame3, text="送り先郵便番号", padding=(82, 10, 3, 10))
         win.zipcode_label.pack(side="left")
         win.zipcode_box1 = tk.Entry(win.reg_frame3, width=7)
         win.zipcode_box1.pack(side="left")
+        win.zipcode_box1.insert(0, self.master.sendto_zipcode1)
         win.hyphen_label = ttk.Label(win.reg_frame3, text="-", padding=(1, 10, 3, 10))
         win.hyphen_label.pack(side="left")
         win.zipcode_box2 = tk.Entry(win.reg_frame3, width=12)
         win.zipcode_box2.pack(side="left")
+        win.zipcode_box2.insert(0, self.master.sendto_zipcode2)
         #### address ####
         win.addressboxlabel = ttk.Label(win.reg_frame4, text="送り先住所", padding=(106, 10, 3, 10))
         win.addressboxlabel.pack(side="left")
         win.addressbox = tk.Entry(win.reg_frame4, width=65, textvariable='')
         win.addressbox.pack(side="left")
+        win.addressbox.insert(0, self.master.sendto_address1)
         win.addressboxlabel2 = ttk.Label(win.reg_frame5, text="番地・号・建物名・部屋番号", padding=(24, 10, 3, 10))
         win.addressboxlabel2.pack(side="left")
         win.addressbox2 = tk.Entry(win.reg_frame5, width=65)
         win.addressbox2.pack(side="left")
+        win.addressbox2.insert(0, self.master.sendto_address2)
         #### tel ####
         win.telboxLabel = ttk.Label(win.reg_frame6, text="送り先電話番号", padding=(82, 10, 3, 10))
         win.telboxLabel.pack(side="left")
         win.telbox = tk.Entry(win.reg_frame6)
         win.telbox.pack(side="left")
+        win.telbox.insert(0, self.master.sendto_tel)
         #### date ####
         win.dateboxLabel = ttk.Label(win.reg_frame7, text="日付", padding=(138, 10, 3, 10))
         win.dateboxLabel.pack(side="left")
         win.datebox = tk.Entry(win.reg_frame7)
         win.datebox.pack(side="left")
+        win.datebox.insert(0, self.master.sendto_date)
         #### order ####
         win.orderboxLabel = ttk.Label(win.reg_frame8, text="注文内容", padding=(115, 10, 3, 10))
         win.orderboxLabel.pack(side="left")
         win.orderbox = tk.Entry(win.reg_frame8, width=65)
         win.orderbox.pack(side="left")
+        win.orderbox.insert(0, self.master.sendto_order)
         #### ok & close button ####
         win.ok = tk.Button(win.reg_frame9, text="OK", width=5, height=2, padx=44, pady=1)
         win.ok.bind("<ButtonPress>", self.__setup_sendto_input)
@@ -106,15 +114,12 @@ class SendToWindow(tk.Frame):
             if not parent_tel:
                 self.win.telbox.insert(0, self.master.telbox.get())
 
-    def __set_additional_form_widgets(self):
-        ""
-
     def __setup_sendto_input(self, event):
         self.master.sendto_name = self.win.namebox.get()
-        self.master.sendto_zipcode = self.win.zipcode_box1.get() + \
-            '-' + self.win.zipcode_box2.get()
-        self.master.sendto_address = self.win.addressbox.get() + \
-            '　' + self.win.addressbox2.get()
+        self.master.sendto_zipcode1 = self.win.zipcode_box1.get()
+        self.master.sendto_zipcode2 = self.win.zipcode_box2.get()
+        self.master.sendto_address1 = self.win.addressbox.get()
+        self.master.sendto_address2 = self.win.addressbox2.get()
         self.master.sendto_tel = self.win.telbox.get()
         self.master.sendto_date = self.win.datebox.get()
         self.master.sendto_order = self.win.orderbox.get()

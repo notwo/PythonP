@@ -26,6 +26,16 @@ class CustomerDialog(tk.Frame):
         crnt_dir = os.path.abspath('./data/')
         self.csv = os.path.join(crnt_dir, OUT_CSV)
 
+        # sendto input
+        self.sendto_name = ''
+        self.sendto_zipcode1 = ''
+        self.sendto_zipcode2 = ''
+        self.sendto_address1 = ''
+        self.sendto_address2 = ''
+        self.sendto_tel = ''
+        self.sendto_date = ''
+        self.sendto_order = ''
+
         # set view
         self.pack()
         self.__first_open()
