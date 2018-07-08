@@ -8,8 +8,8 @@ import os
 import re
 
 CSV_HEADER = "お客様氏名,郵便番号,住所,電話番号,送り先情報"
-COLUMN_WIDTH_LIST = [115, 95, 300, 125]
-OUT_CSV = "customer.csv"
+COLUMN_WIDTH_LIST = [115, 95, 300, 125, 100]
+OUT_CSV = "customer.csv" 
 
 class CustomerDialog(tk.Frame):
     def __init__(self, master=None):
@@ -125,9 +125,9 @@ class CustomerDialog(tk.Frame):
     def __set_treeview(self):
         self.tree = table.DataTable(self, key={ \
             'frame': self.tree_frame, \
-            'size': 4, \
+            'size': len(CSV_HEADER.split(',')), \
             'column_width': COLUMN_WIDTH_LIST, \
-            'headings': ['お客様氏名', '郵便番号', '住所', '電話番号'], \
+            'headings': CSV_HEADER.split(','), \
             'data': self.customers, \
             'searched_data': self.searched_customers, \
         })

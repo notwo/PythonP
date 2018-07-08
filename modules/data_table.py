@@ -1,3 +1,4 @@
+import tkinter as tk
 from tkinter import ttk
 from modules import edit_window as ewin
 
@@ -18,13 +19,17 @@ class DataTable(ttk.Treeview):
         self["columns"] = list(range(1, size + 1))
         self["show"] = "headings"
         for num in range(0, size):
-            self.column(num + 1, width=column_width[num])
+            self.column(num + 1, width=column_width[num], minwidth=30)
             self.heading(num + 1, text=self.headings[num], command=self.__sort)
             self.sort_mode.append('asc')
         for record in self.data:
             self.insert("","end",values=(record))
         # set each row's event
         self.bind('<Double-1>', self.__open_edit)
+        # scrollbar
+        self.xScroll = tk.Scrollbar(self.frame, orient=tk.HORIZONTAL, command=self.xview)
+        self.xScroll.pack(side=tk.BOTTOM, fill=tk.X, expand=1)
+        self.configure(xscroll=self.xScroll.set)
 
     ##### events #####
     def __open_edit(self, event):

@@ -76,7 +76,7 @@ class SendToWindow(tk.Frame):
         win.orderbox.pack(side="left")
         #### ok & close button ####
         win.ok = tk.Button(win.reg_frame9, text="OK", width=5, height=2, padx=44, pady=1)
-        win.ok.bind("<ButtonPress>", self.__close_window)
+        win.ok.bind("<ButtonPress>", self.__setup_sendto_input)
         win.ok.pack()
         #### cancel & close button ####
         win.cancel = tk.Button(win.reg_frame9, text="Cancel", width=5, height=2, padx=44, pady=1)
@@ -108,7 +108,16 @@ class SendToWindow(tk.Frame):
 
     def __set_additional_form_widgets(self):
         ""
-    def __setup_sendto(self, event):
+
+    def __setup_sendto_input(self, event):
+        self.master.sendto_name = self.win.namebox.get()
+        self.master.sendto_zipcode = self.win.zipcode_box1.get() + \
+            '-' + self.win.zipcode_box2.get()
+        self.master.sendto_address = self.win.addressbox.get() + \
+            '　' + self.win.addressbox2.get()
+        self.master.sendto_tel = self.win.telbox.get()
+        self.master.sendto_date = self.win.datebox.get()
+        self.master.sendto_order = self.win.orderbox.get()
         self.destroy()
 
     def __close_window(self, event):
