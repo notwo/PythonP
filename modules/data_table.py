@@ -8,16 +8,18 @@ class DataTable(ttk.Treeview):
         self.sort_mode = []
         self.frame = key.get('key').get('frame')
         ttk.Treeview.__init__(self, self.frame)
-
         self.data = key.get('key').get('data')
+        height = key.get('key').get('height')
         self.searched_data = key.get('key').get('searched_data')
         size = key.get('key').get('size')
         column_width = key.get('key').get('column_width')
+        self.search_on = key.get('key').get('search_on')
         self.headings = key.get('key').get('headings')
         if len(column_width) != size or len(self.headings) != size:
             return
         self["columns"] = list(range(1, size + 1))
         self["show"] = "headings"
+        self["height"] = height
         for num in range(0, size):
             self.column(num + 1, width=column_width[num], minwidth=30)
             self.heading(num + 1, text=self.headings[num], command=self.__sort)
@@ -26,10 +28,6 @@ class DataTable(ttk.Treeview):
             self.insert("","end",values=(record))
         # set each row's event
         self.bind('<Double-1>', self.__open_edit)
-        # scrollbar
-        self.xScroll = tk.Scrollbar(self.frame, orient=tk.HORIZONTAL, command=self.xview)
-        self.xScroll.pack(side=tk.BOTTOM, fill=tk.X, expand=1)
-        self.configure(xscroll=self.xScroll.set)
 
     ##### events #####
     def __open_edit(self, event):
@@ -43,6 +41,8 @@ class DataTable(ttk.Treeview):
             })
 
     def __sort(self):
+        if not self.search_on:
+            return
         # sort
         val = []
         hash_for_sort = {}
@@ -72,3 +72,4 @@ class DataTable(ttk.Treeview):
         self.delete(*self.get_children())
         for v in g2:
             self.insert("","end",values=(hash_for_sort[v]))
+    

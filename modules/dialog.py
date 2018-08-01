@@ -8,7 +8,9 @@ import os
 import re
 
 CSV_HEADER = "お客様氏名,郵便番号,住所,電話番号,送り先情報"
-COLUMN_WIDTH_LIST = [115, 95, 300, 125, 100]
+SENDTO_HEADER = "送り先氏名,郵便番号,送り先住所,送り先電話番号,日付,内容"
+COLUMN_WIDTH_LIST = [115, 85, 300, 125, 100]
+SENDTO_COLUMN_WIDTH_LIST = [115, 85, 300, 90, 55, 125]
 OUT_CSV = "customer.csv" 
 
 class CustomerDialog(tk.Frame):
@@ -69,6 +71,8 @@ class CustomerDialog(tk.Frame):
         self.search_frame.pack(fill=tk.BOTH)
         self.tree_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
         self.tree_frame.pack(fill=tk.BOTH)
+        self.sendto_tree_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
+        self.sendto_tree_frame.pack(fill=tk.BOTH)
         self.removebutton_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
         self.removebutton_frame.pack(fill=tk.BOTH)
         self.button_frame = tk.Frame(self.reg_tab, pady=8)
@@ -136,12 +140,24 @@ class CustomerDialog(tk.Frame):
         self.tree = table.DataTable(self, key={ \
             'frame': self.tree_frame, \
             'size': len(CSV_HEADER.split(',')), \
+            'height': 7, \
             'column_width': COLUMN_WIDTH_LIST, \
+            'search_on': True, \
             'headings': CSV_HEADER.split(','), \
             'data': self.customers, \
             'searched_data': self.searched_customers, \
         })
         self.tree.pack()
+        self.sendto_tree = table.DataTable(self, key={ \
+            'frame': self.sendto_tree_frame, \
+            'size': len(SENDTO_HEADER.split(',')), \
+            'height': 2, \
+            'column_width': SENDTO_COLUMN_WIDTH_LIST, \
+            'search_on': False, \
+            'headings': SENDTO_HEADER.split(','), \
+            'data': [], \
+        })
+        self.sendto_tree.pack()
 
     def __first_open(self):
         crnt_dir = os.path.abspath('./')
@@ -181,6 +197,18 @@ class CustomerDialog(tk.Frame):
             self.zipcode_box1.get() + "-" + self.zipcode_box2.get() + "," + \
             self.addressbox.get() + "　" + self.addressbox2.get() + "," + \
             self.telbox.get()
+        if self.sendto_name != '' and \
+            self.sendto_zipcode1 != '' and self.sendto_zipcode2 != '' and \
+            self.sendto_address1 != '' and self.sendto_address2 != '' and \
+            self.sendto_tel != '' and \
+            self.sendto_date != '':
+            str += "," + \
+                self.sendto_name + "、" + \
+                self.sendto_zipcode1 + "-" + self.sendto_zipcode2 + "、" + \
+                self.sendto_address1 + "　" + self.sendto_address2 + "、" + \
+                self.sendto_tel + "、" + \
+                self.sendto_date + "、" + \
+                self.sendto_order
         f = open(self.csv, 'a')
         f.write(str)
         f.close()
