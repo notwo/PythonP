@@ -146,6 +146,7 @@ class CustomerDialog(tk.Frame):
             'headings': CSV_HEADER.split(','), \
             'data': self.customers, \
             'searched_data': self.searched_customers, \
+            'not_display_last_column': True, \
         })
         self.tree.pack()
         self.sendto_tree = table.DataTable(self, key={ \

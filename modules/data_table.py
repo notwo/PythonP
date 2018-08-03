@@ -18,6 +18,9 @@ class DataTable(ttk.Treeview):
         if len(column_width) != size or len(self.headings) != size:
             return
         self["columns"] = list(range(1, size + 1))
+        not_display_last_column = key.get('key').get('not_display_last_column')
+        if not_display_last_column:
+            self["displaycolumns"] = list(range(1, size))
         self["show"] = "headings"
         self["height"] = height
         for num in range(0, size):
