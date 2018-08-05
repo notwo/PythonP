@@ -15,6 +15,9 @@ class DataTable(ttk.Treeview):
         column_width = key.get('key').get('column_width')
         self.search_on = key.get('key').get('search_on')
         self.headings = key.get('key').get('headings')
+        self.show_directly = key.get('key').get('show_directly')
+        self.sendto_length = key.get('key').get('sendto_length')
+        self.sendto_tree = key.get('key').get('sendto_tree')
         if len(column_width) != size or len(self.headings) != size:
             return
         self["columns"] = list(range(1, size + 1))
@@ -27,10 +30,13 @@ class DataTable(ttk.Treeview):
             self.column(num + 1, width=column_width[num], minwidth=30)
             self.heading(num + 1, text=self.headings[num], command=self.__sort)
             self.sort_mode.append('asc')
-        for record in self.data:
-            self.insert("","end",values=(record))
+        if self.show_directly:
+            for record in self.data:
+                self.insert("","end",values=(record))
         # set each row's event
         self.bind('<Double-1>', self.__open_edit)
+        if self.show_directly:
+            self.bind('<Button-1>', self.__show_sendto)
 
     ##### events #####
     def __open_edit(self, event):
@@ -42,6 +48,20 @@ class DataTable(ttk.Treeview):
                 "data": self.data, \
                 "index": record_index \
             })
+
+    def __show_sendto(self, event):
+        y = self.winfo_pointery() - self.winfo_rooty()
+        record_index = self.identify_row(y)
+        # if cant get index, skip it.
+        if not (record_index or self.sendto_length):
+            return
+        record = self.item(record_index)['values']
+        if len(record) >= self.sendto_length:
+            val = record[self.sendto_length - 1].split('、')
+            self.sendto_tree.delete(*self.sendto_tree.get_children())
+            self.sendto_tree.insert("","end",values=(val))
+        else:
+            self.sendto_tree.delete(*self.sendto_tree.get_children())
 
     def __sort(self):
         if not self.search_on:
@@ -75,4 +95,3 @@ class DataTable(ttk.Treeview):
         self.delete(*self.get_children())
         for v in g2:
             self.insert("","end",values=(hash_for_sort[v]))
-    

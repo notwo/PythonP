@@ -25,6 +25,7 @@ class CustomerDialog(tk.Frame):
         self.search_check = None
         self.chkval = None
         self.tree = None
+        self.sendto_tree = None
         crnt_dir = os.path.abspath('./data/')
         self.csv = os.path.join(crnt_dir, OUT_CSV)
 
@@ -137,6 +138,15 @@ class CustomerDialog(tk.Frame):
         #self.listbox.pack()
 
     def __set_treeview(self):
+        self.sendto_tree = table.DataTable(self, key={ \
+            'frame': self.sendto_tree_frame, \
+            'size': len(SENDTO_HEADER.split(',')), \
+            'height': 2, \
+            'column_width': SENDTO_COLUMN_WIDTH_LIST, \
+            'search_on': False, \
+            'headings': SENDTO_HEADER.split(','), \
+            'data': self.customers, \
+        })
         self.tree = table.DataTable(self, key={ \
             'frame': self.tree_frame, \
             'size': len(CSV_HEADER.split(',')), \
@@ -147,17 +157,11 @@ class CustomerDialog(tk.Frame):
             'data': self.customers, \
             'searched_data': self.searched_customers, \
             'not_display_last_column': True, \
+            'show_directly': True, \
+            'sendto_length': len(CSV_HEADER.split(',')), \
+            'sendto_tree': self.sendto_tree, \
         })
         self.tree.pack()
-        self.sendto_tree = table.DataTable(self, key={ \
-            'frame': self.sendto_tree_frame, \
-            'size': len(SENDTO_HEADER.split(',')), \
-            'height': 2, \
-            'column_width': SENDTO_COLUMN_WIDTH_LIST, \
-            'search_on': False, \
-            'headings': SENDTO_HEADER.split(','), \
-            'data': [], \
-        })
         self.sendto_tree.pack()
 
     def __first_open(self):
