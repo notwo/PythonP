@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import os
+
 class SendToWindow(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)

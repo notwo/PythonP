@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from modules import edit_window as ewin
+from modules import sendto_window as swin
 
 class DataTable(ttk.Treeview):
     def __init__(self, master=None, **key):
@@ -33,6 +34,17 @@ class DataTable(ttk.Treeview):
         if self.show_directly:
             for record in self.data:
                 self.insert("","end",values=(record))
+        
+        # sendto input
+        self.sendto_name = ''
+        self.sendto_zipcode1 = ''
+        self.sendto_zipcode2 = ''
+        self.sendto_address1 = ''
+        self.sendto_address2 = ''
+        self.sendto_tel = ''
+        self.sendto_date = ''
+        self.sendto_order = ''
+
         # set each row's event
         self.bind('<Double-1>', self.__open_edit)
         if self.show_directly:
@@ -40,14 +52,33 @@ class DataTable(ttk.Treeview):
 
     ##### events #####
     def __open_edit(self, event):
+        # specify clicked window
         record_index = self.focus()
         if record_index:
-            record = self.item(record_index)['values']
-            ewin.EditWindow(self, key={ \
-                "record": record, \
-                "data": self.data, \
-                "index": record_index \
-            })
+            y = int(self.winfo_geometry().split('x')[0])
+            if y > 700:
+                y = self.winfo_pointery() - self.winfo_rooty()
+                record_index = self.identify_row(y)
+                record = self.item(record_index)['values']
+                self.sendto_name = record[0]
+                zip_code = record[1].split('-')
+                self.sendto_zipcode1 = zip_code[0]
+                self.sendto_zipcode2 = zip_code[1]
+                address = record[2].split('　')
+                self.sendto_address1 = address[0]
+                self.sendto_address2 = address[1]
+                self.sendto_tel = record[3]
+                self.sendto_date = record[4]
+                self.sendto_order = record[5]
+
+                swin.SendToWindow(self)
+            else:
+                record = self.item(record_index)['values']
+                ewin.EditWindow(self, key={ \
+                    "record": record, \
+                    "data": self.data, \
+                    "index": record_index \
+                })
 
     def __show_sendto(self, event):
         y = self.winfo_pointery() - self.winfo_rooty()

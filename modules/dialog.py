@@ -10,7 +10,7 @@ import re
 CSV_HEADER = "お客様氏名,郵便番号,住所,電話番号,送り先情報"
 SENDTO_HEADER = "送り先氏名,郵便番号,送り先住所,送り先電話番号,日付,内容"
 COLUMN_WIDTH_LIST = [115, 85, 300, 125, 100]
-SENDTO_COLUMN_WIDTH_LIST = [115, 85, 300, 90, 55, 125]
+SENDTO_COLUMN_WIDTH_LIST = [115, 85, 300, 90, 60, 125]
 OUT_CSV = "customer.csv" 
 
 class CustomerDialog(tk.Frame):
