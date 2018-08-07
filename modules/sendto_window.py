@@ -124,7 +124,21 @@ class SendToWindow(tk.Frame):
         self.master.sendto_tel = self.win.telbox.get()
         self.master.sendto_date = self.win.datebox.get()
         self.master.sendto_order = self.win.orderbox.get()
+        self.__update_datatable()
         self.destroy()
+
+    def __update_datatable(self):
+        self.master.delete(*self.master.get_children())
+        ary = []
+        ary.append(self.master.sendto_name)
+        zip_code = self.master.sendto_zipcode1 + '-' + self.master.sendto_zipcode2
+        ary.append(zip_code)
+        address = self.master.sendto_address1 + '　' + self.master.sendto_address2
+        ary.append(address)
+        ary.append(self.master.sendto_tel)
+        ary.append(self.master.sendto_date)
+        ary.append(self.master.sendto_order)
+        self.master.insert("","end",values=ary)
 
     def __close_window(self, event):
         self.destroy()
