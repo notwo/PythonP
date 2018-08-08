@@ -4,6 +4,7 @@ from tkinter import filedialog as fd
 from tkinter import messagebox as mbox
 from modules import data_table as table
 from modules import sendto_window as swin
+from modules import customer_csv as csvlib
 import os
 import re
 
@@ -26,8 +27,14 @@ class CustomerDialog(tk.Frame):
         self.chkval = None
         self.tree = None
         self.sendto_tree = None
+        self.update_directly = False
         crnt_dir = os.path.abspath('./data/')
         self.csv = os.path.join(crnt_dir, OUT_CSV)
+        self.customer_csv = csvlib.CustomerCSV(self, key={
+            'filename': OUT_CSV,
+            'data': self.customers,
+            'searched_data': self.searched_customers
+        })
 
         # sendto input
         self.sendto_name = ''
@@ -41,8 +48,8 @@ class CustomerDialog(tk.Frame):
 
         # set view
         self.pack()
-        self.__first_open()
-        self.__read_csv()
+        self.customer_csv.first_open()
+        self.customer_csv.read_csv()
         self.__set_frame()
         self.__set_treeview()
         self.__set_form_widgets()
@@ -164,30 +171,6 @@ class CustomerDialog(tk.Frame):
         self.tree.pack()
         self.sendto_tree.pack()
 
-    def __first_open(self):
-        crnt_dir = os.path.abspath('./')
-        path = os.path.join(crnt_dir, 'data')
-        if not os.path.isdir(path):
-            os.mkdir(path)
-
-    def __read_csv(self):
-        crnt_dir = os.path.abspath('./data/')
-        csv = os.path.join(crnt_dir, OUT_CSV)
-        if not os.path.exists(self.csv):
-            self.__write_header()
-
-        f = open(csv, 'r')
-        # read header info
-        f.readline()
-        lines = f.readlines()
-        for str in lines:
-            # delete unknown last empty items...
-            if str == '\n':
-                continue
-            self.customers.append(str.split(','))
-            self.searched_customers.append(str.split(','))
-        f.close()
-
     ##### events #####
     def __open_sendto_window(self, event):
         swin.SendToWindow(self)
@@ -237,14 +220,6 @@ class CustomerDialog(tk.Frame):
                 self.sendto_order
         return str
 
-    def __write_header(self):
-        f = open(self.csv, 'w')
-        f.write(CSV_HEADER)
-        f.close()
-
-    def __write_changed_csv(self):
-        pass
-
     def __remove_record(self, event):
         if (self.tree is None or not self.tree.focus()):
             return
@@ -257,7 +232,7 @@ class CustomerDialog(tk.Frame):
         self.tree.data = self.customers
         self.tree.searched_data = self.searched_customers
         self.tree.delete(self.tree.focus())
-        self.__write_header()
+        self.customer_csv.write_header()
         f = open(self.csv, 'a')
         f.write('\n')
         g = (d for d in self.customers)

@@ -7,7 +7,7 @@ class DataTable(ttk.Treeview):
     def __init__(self, master=None, **key):
         super().__init__(master)
         self.sort_mode = []
-        self.update_directly = False
+        self.update_directly = True
         self.frame = key.get('key').get('frame')
         ttk.Treeview.__init__(self, self.frame)
         self.data = key.get('key').get('data')
