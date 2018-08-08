@@ -116,6 +116,12 @@ class SendToWindow(tk.Frame):
                 self.win.telbox.insert(0, self.master.telbox.get())
 
     def __setup_sendto_input(self, event):
+        self.__update_input()
+        if self.master.update_directly:
+            self.__update_datatable()
+        self.destroy()
+
+    def __update_input(self):
         self.master.sendto_name = self.win.namebox.get()
         self.master.sendto_zipcode1 = self.win.zipcode_box1.get()
         self.master.sendto_zipcode2 = self.win.zipcode_box2.get()
@@ -124,8 +130,6 @@ class SendToWindow(tk.Frame):
         self.master.sendto_tel = self.win.telbox.get()
         self.master.sendto_date = self.win.datebox.get()
         self.master.sendto_order = self.win.orderbox.get()
-        self.__update_datatable()
-        self.destroy()
 
     def __update_datatable(self):
         self.master.delete(*self.master.get_children())

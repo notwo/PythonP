@@ -193,27 +193,11 @@ class CustomerDialog(tk.Frame):
         swin.SendToWindow(self)
 
     def __write_csv(self, event):
-        #if ():
+        #if self.__validate():
         #    mbox.showwarning('', '情報が不足しています。')
         #    return
         # write file
-        str = "\n" + \
-            self.namebox.get() + "," + \
-            self.zipcode_box1.get() + "-" + self.zipcode_box2.get() + "," + \
-            self.addressbox.get() + "　" + self.addressbox2.get() + "," + \
-            self.telbox.get()
-        if self.sendto_name != '' and \
-            self.sendto_zipcode1 != '' and self.sendto_zipcode2 != '' and \
-            self.sendto_address1 != '' and self.sendto_address2 != '' and \
-            self.sendto_tel != '' and \
-            self.sendto_date != '':
-            str += "," + \
-                self.sendto_name + "、" + \
-                self.sendto_zipcode1 + "-" + self.sendto_zipcode2 + "、" + \
-                self.sendto_address1 + "　" + self.sendto_address2 + "、" + \
-                self.sendto_tel + "、" + \
-                self.sendto_date + "、" + \
-                self.sendto_order
+        str = self.__make_str()
         f = open(self.csv, 'a')
         f.write(str)
         f.close()
@@ -233,13 +217,38 @@ class CustomerDialog(tk.Frame):
         self.addressbox2.delete(0, tk.END)
         self.telbox.delete(0, tk.END)
 
+    def __make_str(self):
+        str = "\n" + \
+            self.namebox.get() + "," + \
+            self.zipcode_box1.get() + "-" + self.zipcode_box2.get() + "," + \
+            self.addressbox.get() + "　" + self.addressbox2.get() + "," + \
+            self.telbox.get()
+        if self.sendto_name != '' and \
+            self.sendto_zipcode1 != '' and self.sendto_zipcode2 != '' and \
+            self.sendto_address1 != '' and self.sendto_address2 != '' and \
+            self.sendto_tel != '' and \
+            self.sendto_date != '':
+            str += "," + \
+                self.sendto_name + "、" + \
+                self.sendto_zipcode1 + "-" + self.sendto_zipcode2 + "、" + \
+                self.sendto_address1 + "　" + self.sendto_address2 + "、" + \
+                self.sendto_tel + "、" + \
+                self.sendto_date + "、" + \
+                self.sendto_order
+        return str
+
     def __write_header(self):
         f = open(self.csv, 'w')
         f.write(CSV_HEADER)
         f.close()
 
+    def __write_changed_csv(self):
+        pass
+
     def __remove_record(self, event):
         if (self.tree is None or not self.tree.focus()):
+            return
+        if not mbox.askokcancel('askokcancel', '選択中のデータを削除しますがよろしいですか？'):
             return
         # delete & rewrite self.customers
         delete_index = self.tree.index(self.tree.focus())
