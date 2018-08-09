@@ -1,12 +1,9 @@
 import os
 
-CSV_HEADER = "お客様氏名,郵便番号,住所,電話番号,送り先情報"
-
 class CustomerCSV():
     def __init__(self, master=None, **key):
         self.filename = key.get('key').get('filename')
-        self.data = key.get('key').get('data')
-        self.searched_data = key.get('key').get('searched_data')
+        self.header = key.get('key').get('header')
         crnt_dir = os.path.abspath('./data/')
         self.csv = os.path.join(crnt_dir, self.filename)
 
@@ -17,6 +14,8 @@ class CustomerCSV():
             os.mkdir(path)
 
     def read_csv(self):
+        data = []
+        searched_data = []
         if not os.path.exists(self.csv):
             self.write_header()
 
@@ -28,11 +27,21 @@ class CustomerCSV():
             # delete unknown last empty items...
             if str == '\n':
                 continue
-            self.data.append(str.split(','))
-            self.searched_data.append(str.split(','))
+            data.append(str.split(','))
+            searched_data.append(str.split(','))
         f.close()
+        return [data, searched_data]
 
     def write_header(self):
         f = open(self.csv, 'w')
-        f.write(CSV_HEADER)
+        f.write(self.header)
+        f.close()
+
+    def write_all_data(self, data):
+        f = open(self.csv, 'a')
+        f.write('\n')
+        g = (d for d in data)
+        for line in g:
+            str = ','.join(line)
+            f.write(str)
         f.close()

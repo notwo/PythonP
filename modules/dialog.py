@@ -32,8 +32,7 @@ class CustomerDialog(tk.Frame):
         self.csv = os.path.join(crnt_dir, OUT_CSV)
         self.customer_csv = csvlib.CustomerCSV(self, key={
             'filename': OUT_CSV,
-            'data': self.customers,
-            'searched_data': self.searched_customers
+            'header': CSV_HEADER
         })
 
         # sendto input
@@ -48,8 +47,8 @@ class CustomerDialog(tk.Frame):
 
         # set view
         self.pack()
-        self.customer_csv.first_open()
-        self.customer_csv.read_csv()
+        self.customer_csv.first_open() # execute if directory dont exists
+        self.customers, self.searched_customers = self.customer_csv.read_csv()
         self.__set_frame()
         self.__set_treeview()
         self.__set_form_widgets()
@@ -233,13 +232,7 @@ class CustomerDialog(tk.Frame):
         self.tree.searched_data = self.searched_customers
         self.tree.delete(self.tree.focus())
         self.customer_csv.write_header()
-        f = open(self.csv, 'a')
-        f.write('\n')
-        g = (d for d in self.customers)
-        for line in g:
-            str = ','.join(line)
-            f.write(str)
-        f.close()
+        self.customer_csv.write_all_data(self.customers)
 
     def __search_by_name(self):
         search_word = self.searchBox.get()
