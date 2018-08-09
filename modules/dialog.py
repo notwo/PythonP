@@ -5,7 +5,6 @@ from tkinter import messagebox as mbox
 from modules import data_table as table
 from modules import sendto_window as swin
 from modules import customer_csv as csvlib
-import os
 import re
 
 CSV_HEADER = "お客様氏名,郵便番号,住所,電話番号,送り先情報"
@@ -28,8 +27,6 @@ class CustomerDialog(tk.Frame):
         self.tree = None
         self.sendto_tree = None
         self.update_directly = False
-        crnt_dir = os.path.abspath('./data/')
-        self.csv = os.path.join(crnt_dir, OUT_CSV)
         self.customer_csv = csvlib.CustomerCSV(self, key={
             'filename': OUT_CSV,
             'header': CSV_HEADER
