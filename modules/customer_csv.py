@@ -45,3 +45,8 @@ class CustomerCSV():
             str = ','.join(line)
             f.write(str)
         f.close()
+
+    def write_record(self, record):
+        f = open(self.csv, 'a')
+        f.write(record)
+        f.close()

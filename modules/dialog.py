@@ -175,14 +175,12 @@ class CustomerDialog(tk.Frame):
         swin.SendToWindow(self)
 
     def __write_csv(self, event):
-        #if self.__validate():
+        #if self.__validate_input():
         #    mbox.showwarning('', '情報が不足しています。')
         #    return
         # write file
         str = self.__make_str()
-        f = open(self.csv, 'a')
-        f.write(str)
-        f.close()
+        self.customer_csv.write_record(str)
 
         # append to list
         record = re.sub('\n|\r\n|\r', '', str).split(',')
@@ -233,6 +231,9 @@ class CustomerDialog(tk.Frame):
         self.tree.delete(self.tree.focus())
         self.customer_csv.write_header()
         self.customer_csv.write_all_data(self.customers)
+
+    def __validate_input(self):
+        pass
 
     def __search_by_name(self):
         search_word = self.searchBox.get()
