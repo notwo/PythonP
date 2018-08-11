@@ -13,23 +13,24 @@ class DataTable(ttk.Treeview):
         self.data = key.get('key').get('data')
         height = key.get('key').get('height')
         self.searched_data = key.get('key').get('searched_data')
-        size = key.get('key').get('size')
+        self.size = key.get('key').get('size')
         column_width = key.get('key').get('column_width')
         self.search_on = key.get('key').get('search_on')
         self.headings = key.get('key').get('headings')
         self.show_directly = key.get('key').get('show_directly')
+        self.record_tel_index = key.get('key').get('record_tel_index')
         self.customer_csv = key.get('key').get('customer_csv')
         self.sendto_length = key.get('key').get('sendto_length')
         self.sendto_tree = key.get('key').get('sendto_tree')
-        if len(column_width) != size or len(self.headings) != size:
+        if len(column_width) != self.size or len(self.headings) != self.size:
             return
-        self["columns"] = list(range(1, size + 1))
+        self["columns"] = list(range(1, self.size + 1))
         not_display_last_column = key.get('key').get('not_display_last_column')
         if not_display_last_column:
-            self["displaycolumns"] = list(range(1, size))
+            self["displaycolumns"] = list(range(1, self.size))
         self["show"] = "headings"
         self["height"] = height
-        for num in range(0, size):
+        for num in range(0, self.size):
             self.column(num + 1, width=column_width[num], minwidth=30)
             self.heading(num + 1, text=self.headings[num], command=self.__sort)
             self.sort_mode.append('asc')
@@ -79,6 +80,8 @@ class DataTable(ttk.Treeview):
                     'data': self.data, \
                     'update_directly': self.update_directly, \
                     'datatable': self, \
+                    'record_tel_index': self.record_tel_index, \
+                    'sendto_record_size': self.size, \
                 })
             else:
                 record = self.item(record_index)['values']

@@ -150,6 +150,7 @@ class CustomerDialog(tk.Frame):
             'headings': SENDTO_HEADER.split(','), \
             'data': self.customers, \
             'customer_csv': self.customer_csv, \
+            'record_tel_index': 3, \
         })
         self.tree = table.DataTable(self, key={ \
             'frame': self.tree_frame, \

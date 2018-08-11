@@ -11,6 +11,8 @@ class SendToWindow(tk.Frame):
             self.data = key.get('key').get('data')
             self.datatable = key.get('key').get('datatable')
             self.record_index = self.datatable.focus()
+            self.record_tel_index = key.get('key').get('record_tel_index')
+            self.sendto_record_size = key.get('key').get('sendto_record_size')
         win = tk.Toplevel(self)
         win.transient(self.master)
         win.geometry("640x640")
@@ -159,9 +161,19 @@ class SendToWindow(tk.Frame):
         self.datatable.insert("","end",values=new_record)
         g = (d for d in self.data)
         for line in g:
-            sendto_data = line[-1].split('、')
-            if old_record['values'] == sendto_data:
-                print(line)
+            # fix tel if there isnt '0' in the head.
+            record = old_record['values']
+            tel = record[self.record_tel_index]
+            sendto_data = line[-1]
+            if not sendto_data:
+                return
+            sendto_ary = sendto_data.split('、')
+            if len(sendto_ary) < self.sendto_record_size:
+                return
+            if str(tel)[0] != '0':
+                tel = '0' + str(tel)
+            if old_record == sendto_data:
+                pass
             pass
 
     def __close_window(self, event):
