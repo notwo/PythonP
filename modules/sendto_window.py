@@ -10,6 +10,7 @@ class SendToWindow(tk.Frame):
             self.customer_csv = key.get('key').get('customer_csv')
             self.data = key.get('key').get('data')
             self.datatable = key.get('key').get('datatable')
+            self.record_index = self.datatable.focus()
         win = tk.Toplevel(self)
         win.transient(self.master)
         win.geometry("640x640")
@@ -139,19 +140,28 @@ class SendToWindow(tk.Frame):
     def __update_datatable(self):
         if not self.datatable:
             return
-        self.datatable.delete(*self.datatable.get_children())
-        ary = []
-        ary.append(self.datatable.sendto_name)
+        children = self.datatable.get_children()
+        if not self.datatable.exists(children):
+            return
+        old_record = self.datatable.item(children)
+        if not old_record:
+            return
+        self.datatable.delete(*children)
+        new_record = []
+        new_record.append(self.datatable.sendto_name)
         zip_code = self.datatable.sendto_zipcode1 + '-' + self.datatable.sendto_zipcode2
-        ary.append(zip_code)
+        new_record.append(zip_code)
         address = self.datatable.sendto_address1 + '　' + self.datatable.sendto_address2
-        ary.append(address)
-        ary.append(self.datatable.sendto_tel)
-        ary.append(self.datatable.sendto_date)
-        ary.append(self.datatable.sendto_order)
-        self.datatable.insert("","end",values=ary)
+        new_record.append(address)
+        new_record.append(self.datatable.sendto_tel)
+        new_record.append(self.datatable.sendto_date)
+        new_record.append(self.datatable.sendto_order)
+        self.datatable.insert("","end",values=new_record)
         g = (d for d in self.data)
         for line in g:
+            sendto_data = line[-1].split('、')
+            if old_record['values'] == sendto_data:
+                print(line)
             pass
 
     def __close_window(self, event):

@@ -7,7 +7,7 @@ class EditWindow(tk.Frame):
         super().__init__(master)
         self.record = key.get('key').get('record')
         self.data = key.get('key').get('data')
-        self.index = key.get('key').get('index')
+        self.index = key.get('key').get('record_index')
 
         win = tk.Toplevel(self)
         win.transient(self.master)

@@ -54,11 +54,12 @@ class DataTable(ttk.Treeview):
 
     ##### events #####
     def __open_edit(self, event):
+        DATATABLE_POSITION_Y_BORDER = 700
         # specify clicked window
         record_index = self.focus()
         if record_index:
             y = int(self.winfo_geometry().split('x')[0])
-            if y > 700:
+            if y > DATATABLE_POSITION_Y_BORDER:
                 y = self.winfo_pointery() - self.winfo_rooty()
                 record_index = self.identify_row(y)
                 record = self.item(record_index)['values']
@@ -84,7 +85,7 @@ class DataTable(ttk.Treeview):
                 ewin.EditWindow(self, key={ \
                     "record": record, \
                     "data": self.data, \
-                    "index": record_index, \
+                    "record_index": record_index, \
                 })
 
     def __show_sendto(self, event):
