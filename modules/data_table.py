@@ -18,6 +18,7 @@ class DataTable(ttk.Treeview):
         self.search_on = key.get('key').get('search_on')
         self.headings = key.get('key').get('headings')
         self.show_directly = key.get('key').get('show_directly')
+        self.customer_csv = key.get('key').get('customer_csv')
         self.sendto_length = key.get('key').get('sendto_length')
         self.sendto_tree = key.get('key').get('sendto_tree')
         if len(column_width) != size or len(self.headings) != size:
@@ -72,13 +73,18 @@ class DataTable(ttk.Treeview):
                 self.sendto_date = record[4]
                 self.sendto_order = record[5]
 
-                swin.SendToWindow(self)
+                swin.SendToWindow(self, key={ \
+                    'customer_csv': self.customer_csv, \
+                    'data': self.data, \
+                    'update_directly': self.update_directly, \
+                    'datatable': self, \
+                })
             else:
                 record = self.item(record_index)['values']
                 ewin.EditWindow(self, key={ \
                     "record": record, \
                     "data": self.data, \
-                    "index": record_index \
+                    "index": record_index, \
                 })
 
     def __show_sendto(self, event):

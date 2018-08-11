@@ -1,10 +1,15 @@
 import tkinter as tk
 from tkinter import ttk
-import os
 
 class SendToWindow(tk.Frame):
-    def __init__(self, master=None):
+    def __init__(self, master=None, **key):
         super().__init__(master)
+        self.customer_csv = None
+        self.update_directly = key.get('key').get('update_directly')
+        if self.update_directly:
+            self.customer_csv = key.get('key').get('customer_csv')
+            self.data = key.get('key').get('data')
+            self.datatable = key.get('key').get('datatable')
         win = tk.Toplevel(self)
         win.transient(self.master)
         win.geometry("640x640")
@@ -117,7 +122,7 @@ class SendToWindow(tk.Frame):
 
     def __setup_sendto_input(self, event):
         self.__update_input()
-        if self.master.update_directly:
+        if self.update_directly:
             self.__update_datatable()
         self.destroy()
 
@@ -132,17 +137,22 @@ class SendToWindow(tk.Frame):
         self.master.sendto_order = self.win.orderbox.get()
 
     def __update_datatable(self):
-        self.master.delete(*self.master.get_children())
+        if not self.datatable:
+            return
+        self.datatable.delete(*self.datatable.get_children())
         ary = []
-        ary.append(self.master.sendto_name)
-        zip_code = self.master.sendto_zipcode1 + '-' + self.master.sendto_zipcode2
+        ary.append(self.datatable.sendto_name)
+        zip_code = self.datatable.sendto_zipcode1 + '-' + self.datatable.sendto_zipcode2
         ary.append(zip_code)
-        address = self.master.sendto_address1 + '　' + self.master.sendto_address2
+        address = self.datatable.sendto_address1 + '　' + self.datatable.sendto_address2
         ary.append(address)
-        ary.append(self.master.sendto_tel)
-        ary.append(self.master.sendto_date)
-        ary.append(self.master.sendto_order)
-        self.master.insert("","end",values=ary)
+        ary.append(self.datatable.sendto_tel)
+        ary.append(self.datatable.sendto_date)
+        ary.append(self.datatable.sendto_order)
+        self.datatable.insert("","end",values=ary)
+        g = (d for d in self.data)
+        for line in g:
+            pass
 
     def __close_window(self, event):
         self.destroy()

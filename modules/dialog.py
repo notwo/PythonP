@@ -149,6 +149,7 @@ class CustomerDialog(tk.Frame):
             'search_on': False, \
             'headings': SENDTO_HEADER.split(','), \
             'data': self.customers, \
+            'customer_csv': self.customer_csv, \
         })
         self.tree = table.DataTable(self, key={ \
             'frame': self.tree_frame, \
@@ -163,13 +164,16 @@ class CustomerDialog(tk.Frame):
             'show_directly': True, \
             'sendto_length': len(CSV_HEADER.split(',')), \
             'sendto_tree': self.sendto_tree, \
+            'customer_csv': self.customer_csv, \
         })
         self.tree.pack()
         self.sendto_tree.pack()
 
     ##### events #####
     def __open_sendto_window(self, event):
-        swin.SendToWindow(self)
+        swin.SendToWindow(self, key={
+            'update_directly': self.update_directly, \
+        })
 
     def __write_csv(self, event):
         #if self.__validate_input():
