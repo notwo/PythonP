@@ -159,22 +159,34 @@ class SendToWindow(tk.Frame):
         new_record.append(self.datatable.sendto_date)
         new_record.append(self.datatable.sendto_order)
         self.datatable.insert("","end",values=new_record)
-        g = (d for d in self.data)
+        # make deep copy of self.data.
+        data_for_update = self.data[:]
+
+        # update
+        g = (d for d in data_for_update)
         for line in g:
-            # fix tel if there isnt '0' in the head.
-            record = old_record['values']
-            tel = record[self.record_tel_index]
+            old_record_values = old_record['values']
+            tel = old_record_values[self.record_tel_index]
             sendto_data = line[-1]
+            # check either sendto_data is empty or not.
             if not sendto_data:
-                return
+                continue
+
+            # check either line includes sendto_data or not.
             sendto_ary = sendto_data.split('、')
             if len(sendto_ary) < self.sendto_record_size:
-                return
+                continue
+
+            # fix tel if there isnt '0' in the head.
             if str(tel)[0] != '0':
                 tel = '0' + str(tel)
-            if old_record == sendto_data:
-                pass
-            pass
+                old_record_values[self.record_tel_index] = tel
+                old_record_values = list(map(lambda d: str(d), old_record_values))
+            if old_record_values == sendto_ary:
+                index_for_update = self.data.index(line)
+                self.data[index_for_update][-1] = '、'.join(new_record)
+                self.customer_csv.write_header()
+                self.customer_csv.write_all_data(self.data)
 
     def __close_window(self, event):
         self.destroy()
