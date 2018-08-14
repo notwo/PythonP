@@ -37,6 +37,7 @@ class DataTable(ttk.Treeview):
         if self.show_directly:
             for record in self.data:
                 self.insert("","end",values=(record))
+        self.main_tree = None
         
         # sendto input
         self.sendto_name = ''
@@ -52,6 +53,9 @@ class DataTable(ttk.Treeview):
         self.bind('<Double-1>', self.__open_edit)
         if self.show_directly:
             self.bind('<Button-1>', self.__show_sendto)
+
+    def pass_tree(self, tree):
+        self.main_tree = tree
 
     ##### events #####
     def __open_edit(self, event):
@@ -82,13 +86,16 @@ class DataTable(ttk.Treeview):
                     'datatable': self, \
                     'record_tel_index': self.record_tel_index, \
                     'sendto_record_size': self.size, \
+                    'main_tree': self.main_tree, \
                 })
             else:
                 record = self.item(record_index)['values']
                 ewin.EditWindow(self, key={ \
-                    "record": record, \
-                    "data": self.data, \
-                    "record_index": record_index, \
+                    'customer_csv': self.customer_csv, \
+                    'record': record, \
+                    'data': self.data, \
+                    'record_index': record_index, \
+                    'datatable': self, \
                 })
 
     def __show_sendto(self, event):

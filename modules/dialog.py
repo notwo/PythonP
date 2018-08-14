@@ -169,6 +169,7 @@ class CustomerDialog(tk.Frame):
         })
         self.tree.pack()
         self.sendto_tree.pack()
+        self.sendto_tree.pass_tree(self.tree)
 
     ##### events #####
     def __open_sendto_window(self, event):

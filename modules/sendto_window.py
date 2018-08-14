@@ -13,6 +13,7 @@ class SendToWindow(tk.Frame):
             self.record_index = self.datatable.focus()
             self.record_tel_index = key.get('key').get('record_tel_index')
             self.sendto_record_size = key.get('key').get('sendto_record_size')
+            self.main_tree = key.get('key').get('main_tree')
         win = tk.Toplevel(self)
         win.transient(self.master)
         win.geometry("640x640")
@@ -126,6 +127,7 @@ class SendToWindow(tk.Frame):
     def __setup_sendto_input(self, event):
         self.__update_input()
         if self.update_directly:
+            self.__update_csv()
             self.__update_datatable()
         self.destroy()
 
@@ -139,7 +141,7 @@ class SendToWindow(tk.Frame):
         self.master.sendto_date = self.win.datebox.get()
         self.master.sendto_order = self.win.orderbox.get()
 
-    def __update_datatable(self):
+    def __update_csv(self):
         if not self.datatable:
             return
         children = self.datatable.get_children()
@@ -187,6 +189,11 @@ class SendToWindow(tk.Frame):
                 self.data[index_for_update][-1] = '、'.join(new_record)
                 self.customer_csv.write_header()
                 self.customer_csv.write_all_data(self.data)
+
+    def __update_datatable(self):
+        self.main_tree.delete(*self.main_tree.get_children())
+        for record in self.data:
+            self.main_tree.insert("","end",values=(record))
 
     def __close_window(self, event):
         self.destroy()

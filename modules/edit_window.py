@@ -8,6 +8,8 @@ class EditWindow(tk.Frame):
         self.record = key.get('key').get('record')
         self.data = key.get('key').get('data')
         self.index = key.get('key').get('record_index')
+        self.customer_csv = key.get('key').get('customer_csv')
+        self.datatable = key.get('key').get('datatable')
 
         win = tk.Toplevel(self)
         win.transient(self.master)
