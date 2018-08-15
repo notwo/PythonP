@@ -96,6 +96,7 @@ class DataTable(ttk.Treeview):
                     'data': self.data, \
                     'record_index': record_index, \
                     'datatable': self, \
+                    'sendto_record_size': self.size, \
                 })
 
     def __show_sendto(self, event):

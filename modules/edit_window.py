@@ -10,6 +10,7 @@ class EditWindow(tk.Frame):
         self.index = key.get('key').get('record_index')
         self.customer_csv = key.get('key').get('customer_csv')
         self.datatable = key.get('key').get('datatable')
+        self.sendto_record_size = key.get('key').get('sendto_record_size')
 
         win = tk.Toplevel(self)
         win.transient(self.master)
@@ -79,7 +80,7 @@ class EditWindow(tk.Frame):
         win.telbox.insert(0, tel)
         #### ok & close button ####
         win.ok = tk.Button(win.reg_frame9, text="更新する", width=5, height=2, padx=44, pady=1)
-        win.ok.bind("<ButtonPress>", self.__update_datatable)
+        win.ok.bind("<ButtonPress>", self.__setup_input)
         win.ok.pack()
         #### cancel & close button ####
         win.cancel = tk.Button(win.reg_frame9, text="キャンセル", width=5, height=2, padx=44, pady=1)
@@ -87,15 +88,22 @@ class EditWindow(tk.Frame):
         win.cancel.pack()
         self.win = win
 
-    def __update_datatable(self, event):
+    def __setup_input(self, event):
+        self.__update_datatable()
+        self.__update_csv()
+
+    def __update_datatable(self):
         idx_tmp = int(self.index[1:], 16)
         idx = self.__specify_idx(idx_tmp)
         name = self.win.namebox.get()
         zipcode = self.win.zipcode_box1.get() + '-' + self.win.zipcode_box2.get()
         address = self.win.addressbox.get() + '　' + self.win.addressbox2.get()
         tel = self.win.telbox.get()
-        sendto = self.data[idx][-1]
-        self.data[idx] = [name, zipcode, address, tel, sendto]
+        if len(self.data[idx]) >= self.sendto_record_size:
+            sendto = self.data[idx][-1]
+            self.data[idx] = [name, zipcode, address, tel, sendto]
+        else:
+            self.data[idx] = [name, zipcode, address, tel]
 
         # delete all data and set sorted data
         self.master.delete(*self.master.get_children())
@@ -103,6 +111,10 @@ class EditWindow(tk.Frame):
         for v in g:
             self.master.insert("","end",values=(v))
         self.destroy()
+
+    def __update_csv(self):
+        self.customer_csv.write_header()
+        self.customer_csv.write_all_data(self.data)
 
     def __specify_idx(self, idx_tmp):
         if idx_tmp > len(self.data):
