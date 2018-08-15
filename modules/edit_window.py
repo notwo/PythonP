@@ -94,7 +94,8 @@ class EditWindow(tk.Frame):
         zipcode = self.win.zipcode_box1.get() + '-' + self.win.zipcode_box2.get()
         address = self.win.addressbox.get() + '　' + self.win.addressbox2.get()
         tel = self.win.telbox.get()
-        self.data[idx] = [name, zipcode, address, tel]
+        sendto = self.data[idx][-1]
+        self.data[idx] = [name, zipcode, address, tel, sendto]
 
         # delete all data and set sorted data
         self.master.delete(*self.master.get_children())
