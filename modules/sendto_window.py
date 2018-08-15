@@ -79,7 +79,11 @@ class SendToWindow(tk.Frame):
         win.telboxLabel.pack(side="left")
         win.telbox = tk.Entry(win.reg_frame6)
         win.telbox.pack(side="left")
-        win.telbox.insert(0, self.master.sendto_tel)
+        print(self.master.sendto_tel)
+        tel = self.master.sendto_tel
+        if str(tel)[0] != '0':
+            tel = '0' + str(tel)
+        win.telbox.insert(0, tel)
         #### date ####
         win.dateboxLabel = ttk.Label(win.reg_frame7, text="日付", padding=(138, 10, 3, 10))
         win.dateboxLabel.pack(side="left")
