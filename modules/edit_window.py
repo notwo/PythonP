@@ -73,7 +73,10 @@ class EditWindow(tk.Frame):
         win.telboxLabel.pack(side="left")
         win.telbox = tk.Entry(win.reg_frame6)
         win.telbox.pack(side="left")
-        win.telbox.insert(0, self.record[3])
+        tel = self.record[3]
+        if str(tel)[0] != '0':
+            tel = '0' + str(tel)
+        win.telbox.insert(0, tel)
         #### ok & close button ####
         win.ok = tk.Button(win.reg_frame9, text="更新する", width=5, height=2, padx=44, pady=1)
         win.ok.bind("<ButtonPress>", self.__update_datatable)
