@@ -110,7 +110,7 @@ class DataTable(ttk.Treeview):
             return
         record = self.item(record_index)['values']
         if len(record) >= self.sendto_length:
-            val = record[self.sendto_length - 1].split('、')
+            val = record[self.sendto_length - 1].split('/')
             self.sendto_tree.delete(*self.sendto_tree.get_children())
             self.sendto_tree.insert("","end",values=(val))
         else:

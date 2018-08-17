@@ -221,11 +221,11 @@ class CustomerDialog(tk.Frame):
             self.sendto_tel != '' and \
             self.sendto_date != '':
             str += "," + \
-                self.sendto_name + '（' + self.sendto_namekana + '）' + "、" + \
-                self.sendto_zipcode1 + "-" + self.sendto_zipcode2 + "、" + \
-                self.sendto_address1 + "　" + self.sendto_address2 + "、" + \
-                self.sendto_tel + "、" + \
-                self.sendto_date + "、" + \
+                self.sendto_name + '（' + self.sendto_namekana + '）' + "/" + \
+                self.sendto_zipcode1 + "-" + self.sendto_zipcode2 + "/" + \
+                self.sendto_address1 + "　" + self.sendto_address2 + "/" + \
+                self.sendto_tel + "/" + \
+                self.sendto_date + "/" + \
                 self.sendto_order
         return str
 

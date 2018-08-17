@@ -176,7 +176,7 @@ class SendToWindow(tk.Frame):
                 continue
 
             # check either line includes sendto_data or not.
-            sendto_ary = sendto_data.split('、')
+            sendto_ary = sendto_data.split('/')
             if len(sendto_ary) < self.sendto_record_size:
                 continue
 
@@ -187,7 +187,7 @@ class SendToWindow(tk.Frame):
                 old_record_values = list(map(lambda d: str(d), old_record_values))
             if old_record_values == sendto_ary:
                 index_for_update = self.data.index(line)
-                self.data[index_for_update][-1] = '、'.join(new_record)
+                self.data[index_for_update][-1] = '/'.join(new_record)
                 self.customer_csv.write_header()
                 self.customer_csv.write_all_data(self.data)
 
