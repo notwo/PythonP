@@ -35,16 +35,19 @@ class EditWindow(tk.Frame):
         win.reg_frame6.pack(fill=tk.BOTH)
         win.reg_frame7 = tk.Frame(win, padx=10, pady=10)
         win.reg_frame7.pack(fill=tk.BOTH)
-        win.reg_frame8 = tk.Frame(win, padx=10, pady=10)
-        win.reg_frame8.pack(fill=tk.BOTH)
-        win.reg_frame9 = tk.Frame(win, padx=10, pady=10)
-        win.reg_frame9.pack(fill=tk.BOTH)
         #### name ####
-        win.nameboxlabel = ttk.Label(win.reg_frame2, text="氏名", padding=(138, 10, 3, 10))
+        name = self.record[0].split('（')
+        win.nameboxlabel = ttk.Label(win.reg_frame1, text="氏名", padding=(138, 10, 3, 10))
         win.nameboxlabel.pack(side="left")
-        win.namebox = tk.Entry(win.reg_frame2)
+        win.namebox = tk.Entry(win.reg_frame1)
         win.namebox.pack(side="left")
-        win.namebox.insert(0, self.record[0])
+        win.namebox.insert(0, name[0])
+        #### name kana ####
+        win.namekanaboxlabel = ttk.Label(win.reg_frame2, text="氏名(フリガナ))", padding=(96, 10, 3, 10))
+        win.namekanaboxlabel.pack(side="left")
+        win.namekanabox = tk.Entry(win.reg_frame2)
+        win.namekanabox.pack(side="left")
+        win.namekanabox.insert(0, name[1].replace('）', ''))
         #### zip code ####
         zipcode = self.record[1].split('-')
         win.zipcode_label = ttk.Label(win.reg_frame3, text="郵便番号", padding=(113, 10, 3, 10))
@@ -79,11 +82,11 @@ class EditWindow(tk.Frame):
             tel = '0' + str(tel)
         win.telbox.insert(0, tel)
         #### ok & close button ####
-        win.ok = tk.Button(win.reg_frame9, text="更新する", width=5, height=2, padx=44, pady=1)
+        win.ok = tk.Button(win.reg_frame7, text="更新する", width=5, height=2, padx=44, pady=1)
         win.ok.bind("<ButtonPress>", self.__setup_input)
         win.ok.pack()
         #### cancel & close button ####
-        win.cancel = tk.Button(win.reg_frame9, text="キャンセル", width=5, height=2, padx=44, pady=1)
+        win.cancel = tk.Button(win.reg_frame7, text="キャンセル", width=5, height=2, padx=44, pady=1)
         win.cancel.bind("<ButtonPress>", self.__close_window)
         win.cancel.pack()
         self.win = win
@@ -95,7 +98,7 @@ class EditWindow(tk.Frame):
     def __update_datatable(self):
         idx_tmp = int(self.index[1:], 16)
         idx = self.__specify_idx(idx_tmp)
-        name = self.win.namebox.get()
+        name = self.win.namebox.get() + '（' + self.win.namekanabox.get() + '）'
         zipcode = self.win.zipcode_box1.get() + '-' + self.win.zipcode_box2.get()
         address = self.win.addressbox.get() + '　' + self.win.addressbox2.get()
         tel = self.win.telbox.get()

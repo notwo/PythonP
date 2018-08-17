@@ -9,8 +9,8 @@ import re
 
 CSV_HEADER = "お客様氏名,郵便番号,住所,電話番号,送り先情報"
 SENDTO_HEADER = "送り先氏名,郵便番号,送り先住所,送り先電話番号,日付,内容"
-COLUMN_WIDTH_LIST = [107, 76, 280, 125, 100]
-SENDTO_COLUMN_WIDTH_LIST = [107, 76, 280, 95, 72, 130]
+COLUMN_WIDTH_LIST = [137, 76, 280, 125, 100]
+SENDTO_COLUMN_WIDTH_LIST = [137, 76, 280, 95, 72, 130]
 OUT_CSV = "customer.csv" 
 
 class CustomerDialog(tk.Frame):
@@ -34,6 +34,7 @@ class CustomerDialog(tk.Frame):
 
         # sendto input
         self.sendto_name = ''
+        self.sendto_namekana = ''
         self.sendto_zipcode1 = ''
         self.sendto_zipcode2 = ''
         self.sendto_address1 = ''
@@ -69,6 +70,8 @@ class CustomerDialog(tk.Frame):
         self.reg_frame4.pack(fill=tk.BOTH)
         self.reg_frame5 = tk.Frame(self.reg_tab, padx=10, pady=10)
         self.reg_frame5.pack(fill=tk.BOTH)
+        self.reg_frame6 = tk.Frame(self.reg_tab, padx=10, pady=10)
+        self.reg_frame6.pack(fill=tk.BOTH)
         self.list_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
         self.list_frame.pack(fill=tk.BOTH)
         self.search_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
@@ -88,28 +91,33 @@ class CustomerDialog(tk.Frame):
         self.nameboxlabel.pack(side="left")
         self.namebox = tk.Entry(self.reg_frame)
         self.namebox.pack(side="left")
+        #### name kana ####
+        self.namekanaboxlabel = ttk.Label(self.reg_frame2, text="お客様氏名(フリガナ)", padding=(133, 10, 3, 10))
+        self.namekanaboxlabel.pack(side="left")
+        self.namekanabox = tk.Entry(self.reg_frame2)
+        self.namekanabox.pack(side="left")
         #### zip code ####
-        self.zipcode_label = ttk.Label(self.reg_frame2, text="郵便番号", padding=(185, 10, 3, 10))
+        self.zipcode_label = ttk.Label(self.reg_frame3, text="郵便番号", padding=(185, 10, 3, 10))
         self.zipcode_label.pack(side="left")
-        self.zipcode_box1 = tk.Entry(self.reg_frame2, width=7)
+        self.zipcode_box1 = tk.Entry(self.reg_frame3, width=7)
         self.zipcode_box1.pack(side="left")
-        self.hyphen_label = ttk.Label(self.reg_frame2, text="-", padding=(1, 10, 3, 10))
+        self.hyphen_label = ttk.Label(self.reg_frame3, text="-", padding=(1, 10, 3, 10))
         self.hyphen_label.pack(side="left")
-        self.zipcode_box2 = tk.Entry(self.reg_frame2, width=12)
+        self.zipcode_box2 = tk.Entry(self.reg_frame3, width=12)
         self.zipcode_box2.pack(side="left")
         #### address ####
-        self.addressboxlabel = ttk.Label(self.reg_frame3, text="住所", padding=(209, 10, 3, 10))
+        self.addressboxlabel = ttk.Label(self.reg_frame4, text="住所", padding=(209, 10, 3, 10))
         self.addressboxlabel.pack(side="left")
-        self.addressbox = tk.Entry(self.reg_frame3, width=65)
+        self.addressbox = tk.Entry(self.reg_frame4, width=65)
         self.addressbox.pack(side="left")
-        self.addressboxlabel2 = ttk.Label(self.reg_frame4, text="番地・号・建物名・部屋番号", padding=(96, 10, 3, 10))
+        self.addressboxlabel2 = ttk.Label(self.reg_frame5, text="番地・号・建物名・部屋番号", padding=(96, 10, 3, 10))
         self.addressboxlabel2.pack(side="left")
-        self.addressbox2 = tk.Entry(self.reg_frame4, width=65)
+        self.addressbox2 = tk.Entry(self.reg_frame5, width=65)
         self.addressbox2.pack(side="left")
         #### tel ####
-        self.telboxLabel = ttk.Label(self.reg_frame5, text="電話番号", padding=(185, 10, 3, 10))
+        self.telboxLabel = ttk.Label(self.reg_frame6, text="電話番号", padding=(185, 10, 3, 10))
         self.telboxLabel.pack(side="left")
-        self.telbox = tk.Entry(self.reg_frame5)
+        self.telbox = tk.Entry(self.reg_frame6)
         self.telbox.pack(side="left")
         #### search form ####
         self.searchLabel = ttk.Label(self.search_frame, text="氏名で検索", padding=(115, 10, 3, 10))
@@ -194,6 +202,7 @@ class CustomerDialog(tk.Frame):
         self.tree.searched_data = self.searched_customers
         # delete all input
         self.namebox.delete(0, tk.END)
+        self.namekanabox.delete(0, tk.END)
         self.zipcode_box1.delete(0, tk.END)
         self.zipcode_box2.delete(0, tk.END)
         self.addressbox.delete(0, tk.END)
@@ -202,7 +211,7 @@ class CustomerDialog(tk.Frame):
 
     def __make_str(self):
         str = "\n" + \
-            self.namebox.get() + "," + \
+            self.namebox.get() + '（' + self.namekanabox.get() + "）," + \
             self.zipcode_box1.get() + "-" + self.zipcode_box2.get() + "," + \
             self.addressbox.get() + "　" + self.addressbox2.get() + "," + \
             self.telbox.get()
@@ -212,7 +221,7 @@ class CustomerDialog(tk.Frame):
             self.sendto_tel != '' and \
             self.sendto_date != '':
             str += "," + \
-                self.sendto_name + "、" + \
+                self.sendto_name + '（' + self.sendto_namekana + '）' + "、" + \
                 self.sendto_zipcode1 + "-" + self.sendto_zipcode2 + "、" + \
                 self.sendto_address1 + "　" + self.sendto_address2 + "、" + \
                 self.sendto_tel + "、" + \

@@ -41,6 +41,7 @@ class DataTable(ttk.Treeview):
         
         # sendto input
         self.sendto_name = ''
+        self.sendto_namekana = ''
         self.sendto_zipcode1 = ''
         self.sendto_zipcode2 = ''
         self.sendto_address1 = ''
@@ -68,7 +69,9 @@ class DataTable(ttk.Treeview):
                 y = self.winfo_pointery() - self.winfo_rooty()
                 record_index = self.identify_row(y)
                 record = self.item(record_index)['values']
-                self.sendto_name = record[0]
+                sendto_name = record[0].split('（')
+                self.sendto_name = sendto_name[0]
+                self.sendto_namekana = sendto_name[1].replace('）', '')
                 zip_code = record[1].split('-')
                 self.sendto_zipcode1 = zip_code[0]
                 self.sendto_zipcode2 = zip_code[1]
