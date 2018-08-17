@@ -186,9 +186,10 @@ class CustomerDialog(tk.Frame):
         })
 
     def __write_csv(self, event):
-        #if self.__validate_input():
-        #    mbox.showwarning('', '情報が不足しています。')
-        #    return
+        if not self.__validate_input():
+            mbox.showwarning('', '未入力の項目があります。')
+            return
+
         # write file
         str = self.__make_str()
         self.customer_csv.write_record(str)
@@ -245,7 +246,15 @@ class CustomerDialog(tk.Frame):
         self.customer_csv.write_all_data(self.customers)
 
     def __validate_input(self):
-        pass
+        if self.namebox.get() == '' or \
+            self.namekanabox.get() == '' or \
+            self.zipcode_box1.get() == '' or \
+            self.zipcode_box2.get() == '' or \
+            self.addressbox.get() == '' or \
+            self.addressbox2.get() == '' or \
+            self.telbox.get() == '':
+            return False
+        return True
 
     def __search_by_name(self):
         search_word = self.searchBox.get()
