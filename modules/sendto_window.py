@@ -5,9 +5,11 @@ class SendToWindow(tk.Frame):
     def __init__(self, master=None, **key):
         super().__init__(master)
         self.customer_csv = None
-        self.update_directly = key.get('key').get('update_directly')
-        if self.update_directly:
+        self.add_to_csv = key.get('key').get('add_to_csv')
+        self.use_datatable = key.get('key').get('use_datatable')
+        if self.use_datatable or self.add_to_csv:
             self.customer_csv = key.get('key').get('customer_csv')
+        if self.use_datatable:
             self.data = key.get('key').get('data')
             self.datatable = key.get('key').get('datatable')
             self.record_index = self.datatable.focus()
@@ -113,6 +115,7 @@ class SendToWindow(tk.Frame):
         win.cancel.pack()
         self.win = win
 
+    # copy base data to sendto
     def __same_as_address1(self):
         if self.chkval.get() == True:
             self.win.namebox.insert(0, self.master.namebox.get())
@@ -123,11 +126,14 @@ class SendToWindow(tk.Frame):
             self.win.addressbox2.insert(0, self.master.addressbox2.get())
             self.win.telbox.insert(0, self.master.telbox.get())
 
+    ##### events #####
     def __setup_sendto_input(self, event):
         self.__update_input()
-        if self.update_directly:
+        if self.use_datatable:
             self.__update_csv()
             self.__update_datatable()
+        elif self.add_to_csv:
+            self.__add_datatable()
         self.destroy()
 
     def __update_input(self):
@@ -140,6 +146,15 @@ class SendToWindow(tk.Frame):
         self.master.sendto_tel = self.win.telbox.get()
         self.master.sendto_date = self.win.datebox.get()
         self.master.sendto_order = self.win.orderbox.get()
+
+    #
+    # update data
+    #
+    def __update_datatable(self):
+        self.main_tree.delete(*self.main_tree.get_children())
+        for record in self.data:
+            self.main_tree.insert("","end",values=(record))
+
 
     def __update_csv(self):
         if not self.datatable:
@@ -191,10 +206,14 @@ class SendToWindow(tk.Frame):
                 self.customer_csv.write_header()
                 self.customer_csv.write_all_data(self.data)
 
-    def __update_datatable(self):
-        self.main_tree.delete(*self.main_tree.get_children())
-        for record in self.data:
-            self.main_tree.insert("","end",values=(record))
+    #
+    # add data
+    #
+    def __add_csv(self):
+        pass
+
+    def __add_datatable(self):
+        pass
 
     def __close_window(self, event):
         self.destroy()

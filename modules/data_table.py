@@ -7,7 +7,7 @@ class DataTable(ttk.Treeview):
     def __init__(self, master=None, **key):
         super().__init__(master)
         self.sort_mode = []
-        self.update_directly = True
+        self.use_datatable = True
         self.frame = key.get('key').get('frame')
         ttk.Treeview.__init__(self, self.frame)
         self.data = key.get('key').get('data')
@@ -85,7 +85,7 @@ class DataTable(ttk.Treeview):
                 swin.SendToWindow(self, key={ \
                     'customer_csv': self.customer_csv, \
                     'data': self.data, \
-                    'update_directly': self.update_directly, \
+                    'use_datatable': self.use_datatable, \
                     'datatable': self, \
                     'record_tel_index': self.record_tel_index, \
                     'sendto_record_size': self.size, \

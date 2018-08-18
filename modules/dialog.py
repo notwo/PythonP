@@ -26,7 +26,6 @@ class CustomerDialog(tk.Frame):
         self.chkval = None
         self.tree = None
         self.sendto_tree = None
-        self.update_directly = False
         self.customer_csv = csvlib.CustomerCSV(self, key={
             'filename': OUT_CSV,
             'header': CSV_HEADER
@@ -80,6 +79,8 @@ class CustomerDialog(tk.Frame):
         self.tree_frame.pack(fill=tk.BOTH)
         self.sendto_tree_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
         self.sendto_tree_frame.pack(fill=tk.BOTH)
+        self.addsendtobutton_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
+        self.addsendtobutton_frame.pack(fill=tk.BOTH)
         self.removebutton_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
         self.removebutton_frame.pack(fill=tk.BOTH)
         self.button_frame = tk.Frame(self.reg_tab, pady=8)
@@ -136,6 +137,10 @@ class CustomerDialog(tk.Frame):
         self.register = tk.Button(self.button_frame, text="登録", width=5, height=2, padx=44, pady=1)
         self.register.bind("<ButtonPress>", self.__write_csv)
         self.register.pack()
+        ### add sendto button ###
+        self.addsendto = tk.Button(self.addsendtobutton_frame, text="送り先を追加する", width=5, height=2, padx=44, pady=1)
+        self.addsendto.bind("<ButtonPress>", self.__add_sendto)
+        self.addsendto.pack()
         ### delete button ###
         self.remove = tk.Button(self.removebutton_frame, text="削除", width=5, height=2, padx=44, pady=1)
         self.remove.bind("<ButtonPress>", self.__remove_record)
@@ -182,7 +187,7 @@ class CustomerDialog(tk.Frame):
     ##### events #####
     def __open_sendto_window(self, event):
         swin.SendToWindow(self, key={
-            'update_directly': self.update_directly, \
+            'use_datatable': False, \
         })
 
     def __write_csv(self, event):
@@ -229,6 +234,12 @@ class CustomerDialog(tk.Frame):
                 self.sendto_date + "/" + \
                 self.sendto_order
         return str
+
+    def __add_sendto(self, event):
+        swin.SendToWindow(self, key={
+            'use_datatable': False, \
+            'add_to_csv': True, \
+        })
 
     def __remove_record(self, event):
         if (self.tree is None or not self.tree.focus()):
