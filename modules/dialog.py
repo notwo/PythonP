@@ -145,6 +145,10 @@ class CustomerDialog(tk.Frame):
         self.remove = tk.Button(self.removebutton_frame, text="削除", width=5, height=2, padx=44, pady=1)
         self.remove.bind("<ButtonPress>", self.__remove_record)
         self.remove.pack()
+        ### delete sendto button ###
+        self.remove_sendto = tk.Button(self.removebutton_frame, text="送り先を削除", width=5, height=2, padx=44, pady=1)
+        self.remove_sendto.bind("<ButtonPress>", self.__remove_sendto_record)
+        self.remove_sendto.pack()
         ### /sub widgets ###
 
     # maybe unnecessary func...
@@ -183,6 +187,17 @@ class CustomerDialog(tk.Frame):
         self.tree.pack()
         self.sendto_tree.pack()
         self.sendto_tree.pass_tree(self.tree)
+
+    def __validate_input(self):
+        if self.namebox.get() == '' or \
+            self.namekanabox.get() == '' or \
+            self.zipcode_box1.get() == '' or \
+            self.zipcode_box2.get() == '' or \
+            self.addressbox.get() == '' or \
+            self.addressbox2.get() == '' or \
+            self.telbox.get() == '':
+            return False
+        return True
 
     ##### events #####
     def __open_sendto_window(self, event):
@@ -256,16 +271,14 @@ class CustomerDialog(tk.Frame):
         self.customer_csv.write_header()
         self.customer_csv.write_all_data(self.customers)
 
-    def __validate_input(self):
-        if self.namebox.get() == '' or \
-            self.namekanabox.get() == '' or \
-            self.zipcode_box1.get() == '' or \
-            self.zipcode_box2.get() == '' or \
-            self.addressbox.get() == '' or \
-            self.addressbox2.get() == '' or \
-            self.telbox.get() == '':
-            return False
-        return True
+    def __remove_sendto_record(self, event):
+        if (self.sendto_tree is None or not self.sendto_tree.focus()):
+            return
+        if not mbox.askokcancel('askokcancel', '選択中のデータを削除しますがよろしいですか？'):
+            return
+        # delete & rewrite self.customers
+        delete_index = self.sendto_tree.index(self.sendto_tree.focus())
+        self.sendto_tree.delete(self.sendto_tree.focus())
 
     def __search_by_name(self):
         search_word = self.searchBox.get()
