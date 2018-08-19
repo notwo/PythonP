@@ -52,7 +52,7 @@ class CustomerDialog(tk.Frame):
 
     def __set_frame(self):
         # tabs
-        self.notebook = ttk.Notebook(width=900, height=500)
+        self.notebook = ttk.Notebook(width=940, height=520)
         self.reg_tab = tk.Frame(self.notebook)
         self.lst_tab = tk.Frame(self.notebook)
         self.notebook.add(self.reg_tab, text="顧客情報登録", padding=2)
@@ -272,12 +272,23 @@ class CustomerDialog(tk.Frame):
         self.customer_csv.write_all_data(self.customers)
 
     def __remove_sendto_record(self, event):
+        if (self.tree is None or not self.tree.focus()):
+            return
         if (self.sendto_tree is None or not self.sendto_tree.focus()):
+            return
+
+        tree_index = self.tree.index(self.tree.focus())
+        target_record = self.customers[tree_index]
+        if len(target_record) < len(CSV_HEADER.split(',')):
             return
         if not mbox.askokcancel('askokcancel', '選択中のデータを削除しますがよろしいですか？'):
             return
         # delete & rewrite self.customers
-        delete_index = self.sendto_tree.index(self.sendto_tree.focus())
+        sendto_records_str = target_record[-1]
+        sendto_records = sendto_records_str.split('/')
+        g = (d for d in sendto_records)
+        for line in g:
+            print(line)
         self.sendto_tree.delete(self.sendto_tree.focus())
 
     def __search_by_name(self):
