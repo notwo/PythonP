@@ -11,6 +11,7 @@ CSV_HEADER = "お客様氏名,郵便番号,住所,電話番号,送り先情報"
 SENDTO_HEADER = "送り先氏名,郵便番号,送り先住所,送り先電話番号,日付,内容"
 COLUMN_WIDTH_LIST = [137, 76, 280, 125, 100]
 SENDTO_COLUMN_WIDTH_LIST = [137, 76, 280, 95, 72, 130]
+RECORD_TEL_INDEX = 3
 OUT_CSV = "customer.csv" 
 
 class CustomerDialog(tk.Frame):
@@ -167,7 +168,7 @@ class CustomerDialog(tk.Frame):
             'headings': SENDTO_HEADER.split(','), \
             'data': self.customers, \
             'customer_csv': self.customer_csv, \
-            'record_tel_index': 3, \
+            'record_tel_index': RECORD_TEL_INDEX, \
         })
         self.tree = table.DataTable(self, key={ \
             'frame': self.tree_frame, \
@@ -281,15 +282,35 @@ class CustomerDialog(tk.Frame):
         target_record = self.customers[tree_index]
         if len(target_record) < len(CSV_HEADER.split(',')):
             return
-        if not mbox.askokcancel('askokcancel', '選択中のデータを削除しますがよろしいですか？'):
+        if not mbox.askokcancel('askokcancel', '選択中の送付先を削除しますがよろしいですか？'):
             return
+        selected_sendto_record = self.sendto_tree.item(self.sendto_tree.focus())['values']
+        selected_sendto_record = list(map(str, selected_sendto_record))
+        # fix tel if there isnt '0' in the head.
+        tel = selected_sendto_record[RECORD_TEL_INDEX]
+        if str(tel) != '' and str(tel)[0] != '0':
+            tel = '0' + str(tel)
+            selected_sendto_record[RECORD_TEL_INDEX] = tel
+        selected_sendto_record = '/'.join(selected_sendto_record)
         # delete & rewrite self.customers
-        sendto_records_str = target_record[-1]
-        sendto_records = sendto_records_str.split('/')
+        sendto_records_str = target_record.pop()
+        sendto_records = sendto_records_str.split('|')
+        result = ','.join(target_record)
         g = (d for d in sendto_records)
-        for line in g:
-            print(line)
+        for sendto_line in g:
+            if (selected_sendto_record != sendto_line):
+                result += sendto_line + '|'
+        if result[-1:] == '|':
+            result = result[:-1]
+        self.customers[tree_index] = result.split(',')
+        # update tree & sendto_tree
+        self.tree.delete(*self.tree.get_children())
+        for record in self.customers:
+            self.tree.insert("","end",values=(record))
         self.sendto_tree.delete(self.sendto_tree.focus())
+        # update csv
+        self.customer_csv.write_header()
+        self.customer_csv.write_all_data(self.customers)
 
     def __search_by_name(self):
         search_word = self.searchBox.get()
