@@ -31,17 +31,7 @@ class CustomerDialog(tk.Frame):
             'filename': OUT_CSV,
             'header': CSV_HEADER
         })
-
-        # sendto input
-        self.sendto_name = ''
-        self.sendto_namekana = ''
-        self.sendto_zipcode1 = ''
-        self.sendto_zipcode2 = ''
-        self.sendto_address1 = ''
-        self.sendto_address2 = ''
-        self.sendto_tel = ''
-        self.sendto_date = ''
-        self.sendto_order = ''
+        self.swin_for_registration = None
 
         # set view
         self.pack()
@@ -202,9 +192,11 @@ class CustomerDialog(tk.Frame):
 
     ##### events #####
     def __open_sendto_window(self, event):
-        swin.SendToWindow(self, key={
-            'use_datatable': False, \
-        })
+        self.swin_for_registration = \
+            swin.SendToWindow(self, key={
+                'base_input': self.__base_input(), \
+                'use_datatable': False, \
+            })
 
     def __write_csv(self, event):
         if not self.__validate_input():
@@ -231,30 +223,53 @@ class CustomerDialog(tk.Frame):
         self.addressbox2.delete(0, tk.END)
         self.telbox.delete(0, tk.END)
 
+    def __base_input(self, empty=False):
+        return {
+            'name': '', \
+            'name_kana': '', \
+            'zipcode1': '', \
+            'zipcode2': '', \
+            'address1': '', \
+            'address2': '', \
+            'tel': '', \
+            'date': '', \
+            'order': '', \
+        }
+
     def __make_str(self):
+        if self.swin_for_registration is None:
+            return ''
+        sendto_input = self.swin_for_registration.sendto_window_input()
         str = "\n" + \
             self.namebox.get() + '（' + self.namekanabox.get() + "）," + \
             self.zipcode_box1.get() + "-" + self.zipcode_box2.get() + "," + \
             self.addressbox.get() + "　" + self.addressbox2.get() + "," + \
             self.telbox.get()
-        if self.sendto_name != '' and \
-            self.sendto_zipcode1 != '' and self.sendto_zipcode2 != '' and \
-            self.sendto_address1 != '' and self.sendto_address2 != '' and \
-            self.sendto_tel != '' and \
-            self.sendto_date != '':
+        if sendto_input['name'] != '' and sendto_input['name_kana'] != '' and \
+            sendto_input['zipcode1'] != '' and sendto_input['zipcode2'] != '' and \
+            sendto_input['address1'] != '' and sendto_input['address2'] != '' and \
+            sendto_input['tel'] != '' and \
+            sendto_input['date'] != '':
             str += "," + \
-                self.sendto_name + '（' + self.sendto_namekana + '）' + "/" + \
-                self.sendto_zipcode1 + "-" + self.sendto_zipcode2 + "/" + \
-                self.sendto_address1 + "　" + self.sendto_address2 + "/" + \
-                self.sendto_tel + "/" + \
-                self.sendto_date + "/" + \
-                self.sendto_order
+                sendto_input['name'] + '（' + sendto_input['name_kana'] + '）' + "/" + \
+                sendto_input['zipcode1'] + "-" + sendto_input['zipcode2'] + "/" + \
+                sendto_input['address1'] + "　" + sendto_input['address2'] + "/" + \
+                sendto_input['tel'] + "/" + \
+                sendto_input['date'] + "/" + \
+                sendto_input['order']
         return str
 
     def __add_sendto(self, event):
         swin.SendToWindow(self, key={
-            'use_datatable': False, \
+            'base_input': self.__base_input(empty=True), \
+            'customer_csv': self.customer_csv, \
+            'data': self.customers, \
+            'use_datatable': True, \
+            'datatable': self.sendto_tree, \
+            'record_tel_index': RECORD_TEL_INDEX, \
+            'sendto_record_size': len(SENDTO_HEADER.split(',')), \
             'add_to_csv': True, \
+            'main_tree': self.tree, \
         })
 
     def __remove_record(self, event):

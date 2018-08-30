@@ -4,6 +4,7 @@ from tkinter import ttk
 class SendToWindow(tk.Frame):
     def __init__(self, master=None, **key):
         super().__init__(master)
+        base_input = key.get('key').get('base_input')
         self.customer_csv = None
         self.add_to_csv = key.get('key').get('add_to_csv')
         self.use_datatable = key.get('key').get('use_datatable')
@@ -21,9 +22,20 @@ class SendToWindow(tk.Frame):
         win.geometry("640x640")
         win.title("送り先情報入力")
         win.grab_set()
-        self.__set_form_widgets(win)
+        self.__set_form_widgets(win, base_input)
 
-    def __set_form_widgets(self, win):
+        # instance variables
+        self.name = ''
+        self.namekana = ''
+        self.zipcode1 = ''
+        self.zipcode2 = ''
+        self.address1 = ''
+        self.address2 = ''
+        self.tel = ''
+        self.date = ''
+        self.order = ''
+
+    def __set_form_widgets(self, win, base_input):
         #### frame ####
         win.reg_frame1 = tk.Frame(win, padx=10, pady=2)
         win.reg_frame1.pack(fill=tk.BOTH)
@@ -55,41 +67,41 @@ class SendToWindow(tk.Frame):
         win.nameboxlabel.pack(side="left")
         win.namebox = tk.Entry(win.reg_frame2)
         win.namebox.pack(side="left")
-        win.namebox.insert(0, self.master.sendto_name)
+        win.namebox.insert(0, base_input['name'])
         #### name kana ####
         win.namekanaboxlabel = ttk.Label(win.reg_frame3, text="送り先氏名(フリガナ)", padding=(64, 10, 3, 10))
         win.namekanaboxlabel.pack(side="left")
         win.namekanabox = tk.Entry(win.reg_frame3)
         win.namekanabox.pack(side="left")
-        win.namekanabox.insert(0, self.master.sendto_namekana)
+        win.namekanabox.insert(0, base_input['name_kana'])
         #### zip code ####
         win.zipcode_label = ttk.Label(win.reg_frame4, text="送り先郵便番号", padding=(82, 10, 3, 10))
         win.zipcode_label.pack(side="left")
         win.zipcode_box1 = tk.Entry(win.reg_frame4, width=7)
         win.zipcode_box1.pack(side="left")
-        win.zipcode_box1.insert(0, self.master.sendto_zipcode1)
+        win.zipcode_box1.insert(0, base_input['zipcode1'])
         win.hyphen_label = ttk.Label(win.reg_frame4, text="-", padding=(1, 10, 3, 10))
         win.hyphen_label.pack(side="left")
         win.zipcode_box2 = tk.Entry(win.reg_frame4, width=12)
         win.zipcode_box2.pack(side="left")
-        win.zipcode_box2.insert(0, self.master.sendto_zipcode2)
+        win.zipcode_box2.insert(0, base_input['zipcode2'])
         #### address ####
         win.addressboxlabel = ttk.Label(win.reg_frame5, text="送り先住所", padding=(106, 10, 3, 10))
         win.addressboxlabel.pack(side="left")
         win.addressbox = tk.Entry(win.reg_frame5, width=65, textvariable='')
         win.addressbox.pack(side="left")
-        win.addressbox.insert(0, self.master.sendto_address1)
+        win.addressbox.insert(0, base_input['address1'])
         win.addressboxlabel2 = ttk.Label(win.reg_frame6, text="番地・号・建物名・部屋番号", padding=(24, 10, 3, 10))
         win.addressboxlabel2.pack(side="left")
         win.addressbox2 = tk.Entry(win.reg_frame6, width=65)
         win.addressbox2.pack(side="left")
-        win.addressbox2.insert(0, self.master.sendto_address2)
+        win.addressbox2.insert(0, base_input['address2'])
         #### tel ####
         win.telboxLabel = ttk.Label(win.reg_frame7, text="送り先電話番号", padding=(82, 10, 3, 10))
         win.telboxLabel.pack(side="left")
         win.telbox = tk.Entry(win.reg_frame7)
         win.telbox.pack(side="left")
-        tel = self.master.sendto_tel
+        tel = base_input['tel']
         if str(tel) != '' and str(tel)[0] != '0':
             tel = '0' + str(tel)
         win.telbox.insert(0, tel)
@@ -98,13 +110,13 @@ class SendToWindow(tk.Frame):
         win.dateboxLabel.pack(side="left")
         win.datebox = tk.Entry(win.reg_frame8)
         win.datebox.pack(side="left")
-        win.datebox.insert(0, self.master.sendto_date)
+        win.datebox.insert(0, base_input['date'])
         #### order ####
         win.orderboxLabel = ttk.Label(win.reg_frame9, text="注文内容", padding=(115, 10, 3, 10))
         win.orderboxLabel.pack(side="left")
         win.orderbox = tk.Entry(win.reg_frame9, width=65)
         win.orderbox.pack(side="left")
-        win.orderbox.insert(0, self.master.sendto_order)
+        win.orderbox.insert(0, base_input['order'])
         #### ok & close button ####
         win.ok = tk.Button(win.reg_frame10, text="OK", width=5, height=2, padx=44, pady=1)
         win.ok.bind("<ButtonPress>", self.__setup_sendto_input)
@@ -126,26 +138,40 @@ class SendToWindow(tk.Frame):
             self.win.addressbox2.insert(0, self.master.addressbox2.get())
             self.win.telbox.insert(0, self.master.telbox.get())
 
+    def sendto_window_input(self):
+        return {
+            'name': self.name, \
+            'name_kana': self.namekana, \
+            'zipcode1': self.zipcode1, \
+            'zipcode2': self.zipcode2, \
+            'address1': self.address1, \
+            'address2': self.address2, \
+            'tel': self.tel, \
+            'date': self.date, \
+            'order': self.order, \
+        }
+
     ##### events #####
     def __setup_sendto_input(self, event):
         self.__update_input()
         if self.use_datatable:
             self.__update_csv()
-            self.__update_datatable()
-        elif self.add_to_csv:
-            self.__add_datatable()
+            if self.add_to_csv:
+                self.__add_datatable()
+            else:
+                self.__update_datatable()
         self.destroy()
 
     def __update_input(self):
-        self.master.sendto_name = self.win.namebox.get()
-        self.master.sendto_namekana = self.win.namekanabox.get()
-        self.master.sendto_zipcode1 = self.win.zipcode_box1.get()
-        self.master.sendto_zipcode2 = self.win.zipcode_box2.get()
-        self.master.sendto_address1 = self.win.addressbox.get()
-        self.master.sendto_address2 = self.win.addressbox2.get()
-        self.master.sendto_tel = self.win.telbox.get()
-        self.master.sendto_date = self.win.datebox.get()
-        self.master.sendto_order = self.win.orderbox.get()
+        self.name = self.win.namebox.get()
+        self.namekana = self.win.namekanabox.get()
+        self.zipcode1 = self.win.zipcode_box1.get()
+        self.zipcode2 = self.win.zipcode_box2.get()
+        self.address1 = self.win.addressbox.get()
+        self.address2 = self.win.addressbox2.get()
+        self.tel = self.win.telbox.get()
+        self.date = self.win.datebox.get()
+        self.order = self.win.orderbox.get()
 
     #
     # update data
@@ -154,7 +180,6 @@ class SendToWindow(tk.Frame):
         self.main_tree.delete(*self.main_tree.get_children())
         for record in self.data:
             self.main_tree.insert("","end",values=(record))
-
 
     def __update_csv(self):
         if not self.datatable:
@@ -167,15 +192,15 @@ class SendToWindow(tk.Frame):
             return
         self.datatable.delete(*children)
         new_record = []
-        name = self.datatable.sendto_name + '（' + self.datatable.sendto_namekana + '）'
+        name = self.name + '（' + self.namekana + '）'
         new_record.append(name)
-        zip_code = self.datatable.sendto_zipcode1 + '-' + self.datatable.sendto_zipcode2
+        zip_code = self.zipcode1 + '-' + self.zipcode2
         new_record.append(zip_code)
-        address = self.datatable.sendto_address1 + '　' + self.datatable.sendto_address2
+        address = self.address1 + '　' + self.address2
         new_record.append(address)
-        new_record.append(self.datatable.sendto_tel)
-        new_record.append(self.datatable.sendto_date)
-        new_record.append(self.datatable.sendto_order)
+        new_record.append(self.tel)
+        new_record.append(self.date)
+        new_record.append(self.order)
         self.datatable.insert("","end",values=new_record)
         # make deep copy of self.data.
         data_for_update = self.data[:]
@@ -184,6 +209,7 @@ class SendToWindow(tk.Frame):
         g = (d for d in data_for_update)
         for line in g:
             old_record_values = old_record['values']
+            old_record_values = list(map(lambda d: str(d), old_record_values))
             tel = old_record_values[self.record_tel_index]
             sendto_data = line[-1]
             # check either sendto_data is empty or not.

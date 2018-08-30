@@ -39,17 +39,6 @@ class DataTable(ttk.Treeview):
                 self.insert("","end",values=(record))
         self.main_tree = None
         
-        # sendto input
-        self.sendto_name = ''
-        self.sendto_namekana = ''
-        self.sendto_zipcode1 = ''
-        self.sendto_zipcode2 = ''
-        self.sendto_address1 = ''
-        self.sendto_address2 = ''
-        self.sendto_tel = ''
-        self.sendto_date = ''
-        self.sendto_order = ''
-
         # set each row's event
         self.bind('<Double-1>', self.__open_edit)
         if self.show_directly:
@@ -69,20 +58,31 @@ class DataTable(ttk.Treeview):
                 y = self.winfo_pointery() - self.winfo_rooty()
                 record_index = self.identify_row(y)
                 record = self.item(record_index)['values']
-                sendto_name = record[0].split('（')
-                self.sendto_name = sendto_name[0]
-                self.sendto_namekana = sendto_name[1].replace('）', '')
-                zip_code = record[1].split('-')
-                self.sendto_zipcode1 = zip_code[0]
-                self.sendto_zipcode2 = zip_code[1]
-                address = record[2].split('　')
-                self.sendto_address1 = address[0]
-                self.sendto_address2 = address[1]
-                self.sendto_tel = record[3]
-                self.sendto_date = record[4]
-                self.sendto_order = record[5]
+                tmp_sendto_name = record[0].split('（')
+                sendto_name = tmp_sendto_name[0]
+                sendto_namekana = tmp_sendto_name[1].replace('）', '')
+                tmp_zip_code = record[1].split('-')
+                sendto_zipcode1 = tmp_zip_code[0]
+                sendto_zipcode2 = tmp_zip_code[1]
+                tmp_address = record[2].split('　')
+                sendto_address1 = tmp_address[0]
+                sendto_address2 = tmp_address[1]
+                sendto_tel = record[3]
+                sendto_date = record[4]
+                sendto_order = record[5]
 
                 swin.SendToWindow(self, key={ \
+                    'base_input': {
+                        'name': sendto_name, \
+                        'name_kana': sendto_namekana, \
+                        'zipcode1': sendto_zipcode1, \
+                        'zipcode2': sendto_zipcode2, \
+                        'address1': sendto_address1, \
+                        'address2': sendto_address2, \
+                        'tel': sendto_tel, \
+                        'date': sendto_date, \
+                        'order': sendto_order, \
+                    }, \
                     'customer_csv': self.customer_csv, \
                     'data': self.data, \
                     'use_datatable': self.use_datatable, \
