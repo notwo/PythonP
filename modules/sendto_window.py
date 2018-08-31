@@ -3,8 +3,7 @@ from tkinter import ttk
 
 class SendToWindow(tk.Frame):
     def __init__(self, master=None, **key):
-        super().__init__(master)
-        base_input = key.get('key').get('base_input')
+        #super().__init__(master)
         self.customer_csv = None
         self.add_to_csv = key.get('key').get('add_to_csv')
         self.use_datatable = key.get('key').get('use_datatable')
@@ -17,12 +16,6 @@ class SendToWindow(tk.Frame):
             self.record_tel_index = key.get('key').get('record_tel_index')
             self.sendto_record_size = key.get('key').get('sendto_record_size')
             self.main_tree = key.get('key').get('main_tree')
-        win = tk.Toplevel(self)
-        win.transient(self.master)
-        win.geometry("640x640")
-        win.title("送り先情報入力")
-        win.grab_set()
-        self.__set_form_widgets(win, base_input)
 
         # instance variables
         self.name = ''
@@ -35,7 +28,13 @@ class SendToWindow(tk.Frame):
         self.date = ''
         self.order = ''
 
-    def __set_form_widgets(self, win, base_input):
+    def open(self, base_input):
+        super().__init__(None)
+        win = tk.Toplevel(self)
+        win.transient(self.master)
+        win.geometry("640x640")
+        win.title("送り先情報入力")
+        win.grab_set()
         #### frame ####
         win.reg_frame1 = tk.Frame(win, padx=10, pady=2)
         win.reg_frame1.pack(fill=tk.BOTH)

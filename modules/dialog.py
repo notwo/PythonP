@@ -192,11 +192,16 @@ class CustomerDialog(tk.Frame):
 
     ##### events #####
     def __open_sendto_window(self, event):
-        self.swin_for_registration = \
-            swin.SendToWindow(self, key={
-                'base_input': self.__base_input(), \
-                'use_datatable': False, \
-            })
+        data = {}
+        if not self.swin_for_registration:
+            self.swin_for_registration = \
+                swin.SendToWindow(self, key={
+                    'use_datatable': False, \
+                })
+            self.swin_for_registration.open(self.__base_input())
+        else:
+            data = self.swin_for_registration.sendto_window_input()
+            self.swin_for_registration.open(self.__base_input(data=data))
 
     def __write_csv(self, event):
         if not self.__validate_input():
@@ -223,18 +228,31 @@ class CustomerDialog(tk.Frame):
         self.addressbox2.delete(0, tk.END)
         self.telbox.delete(0, tk.END)
 
-    def __base_input(self, empty=False):
-        return {
-            'name': '', \
-            'name_kana': '', \
-            'zipcode1': '', \
-            'zipcode2': '', \
-            'address1': '', \
-            'address2': '', \
-            'tel': '', \
-            'date': '', \
-            'order': '', \
-        }
+    def __base_input(self, empty=False, data={}):
+        if empty or len(data) == 0:
+            return {
+                'name': '', \
+                'name_kana': '', \
+                'zipcode1': '', \
+                'zipcode2': '', \
+                'address1': '', \
+                'address2': '', \
+                'tel': '', \
+                'date': '', \
+                'order': '', \
+            }
+        else:
+            return {
+                'name': data['name'], \
+                'name_kana': data['name_kana'], \
+                'zipcode1': data['zipcode1'], \
+                'zipcode2': data['zipcode2'], \
+                'address1': data['address1'], \
+                'address2': data['address2'], \
+                'tel': data['tel'], \
+                'date': data['date'], \
+                'order': data['order'], \
+            }
 
     def __make_str(self):
         if self.swin_for_registration is None:
@@ -260,8 +278,7 @@ class CustomerDialog(tk.Frame):
         return str
 
     def __add_sendto(self, event):
-        swin.SendToWindow(self, key={
-            'base_input': self.__base_input(empty=True), \
+        swin_for_add = swin.SendToWindow(self, key={
             'customer_csv': self.customer_csv, \
             'data': self.customers, \
             'use_datatable': True, \
@@ -271,6 +288,7 @@ class CustomerDialog(tk.Frame):
             'add_to_csv': True, \
             'main_tree': self.tree, \
         })
+        swin_for_add.open(self.__base_input(empty=True))
 
     def __remove_record(self, event):
         if (self.tree is None or not self.tree.focus()):

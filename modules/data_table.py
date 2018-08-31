@@ -71,18 +71,7 @@ class DataTable(ttk.Treeview):
                 sendto_date = record[4]
                 sendto_order = record[5]
 
-                swin.SendToWindow(self, key={ \
-                    'base_input': {
-                        'name': sendto_name, \
-                        'name_kana': sendto_namekana, \
-                        'zipcode1': sendto_zipcode1, \
-                        'zipcode2': sendto_zipcode2, \
-                        'address1': sendto_address1, \
-                        'address2': sendto_address2, \
-                        'tel': sendto_tel, \
-                        'date': sendto_date, \
-                        'order': sendto_order, \
-                    }, \
+                swin_for_update = swin.SendToWindow(self, key={ \
                     'customer_csv': self.customer_csv, \
                     'data': self.data, \
                     'use_datatable': self.use_datatable, \
@@ -90,6 +79,17 @@ class DataTable(ttk.Treeview):
                     'record_tel_index': self.record_tel_index, \
                     'sendto_record_size': self.size, \
                     'main_tree': self.main_tree, \
+                })
+                swin_for_update.open({
+                    'name': sendto_name, \
+                    'name_kana': sendto_namekana, \
+                    'zipcode1': sendto_zipcode1, \
+                    'zipcode2': sendto_zipcode2, \
+                    'address1': sendto_address1, \
+                    'address2': sendto_address2, \
+                    'tel': sendto_tel, \
+                    'date': sendto_date, \
+                    'order': sendto_order, \
                 })
             else:
                 record = self.item(record_index)['values']
