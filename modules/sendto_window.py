@@ -3,7 +3,6 @@ from tkinter import ttk
 
 class SendToWindow(tk.Frame):
     def __init__(self, master=None, **key):
-        #super().__init__(master)
         self.customer_csv = None
         self.add_to_csv = key.get('key').get('add_to_csv')
         self.use_datatable = key.get('key').get('use_datatable')
@@ -11,6 +10,7 @@ class SendToWindow(tk.Frame):
             self.customer_csv = key.get('key').get('customer_csv')
         if self.use_datatable:
             self.data = key.get('key').get('data')
+            self.searched_data = key.get('key').get('searched_data')
             self.datatable = key.get('key').get('datatable')
             self.record_index = self.datatable.focus()
             self.record_tel_index = key.get('key').get('record_tel_index')
@@ -29,6 +29,7 @@ class SendToWindow(tk.Frame):
         self.order = ''
 
     def open(self, base_input):
+        # initialize toplevel window
         super().__init__(None)
         win = tk.Toplevel(self)
         win.transient(self.master)
@@ -150,6 +151,17 @@ class SendToWindow(tk.Frame):
             'order': self.order, \
         }
 
+    def reset_window_input(self):
+        self.name = ''
+        self.namekana = ''
+        self.zipcode1 = ''
+        self.zipcode2 = ''
+        self.address1 = ''
+        self.address2 = ''
+        self.tel = ''
+        self.date = ''
+        self.order = ''
+
     ##### events #####
     def __setup_sendto_input(self, event):
         self.__update_input()
@@ -230,6 +242,7 @@ class SendToWindow(tk.Frame):
                 self.data[index_for_update][-1] = '/'.join(new_record)
                 self.customer_csv.write_header()
                 self.customer_csv.write_all_data(self.data)
+        self.searched_data = self.data[:]
 
     #
     # add data

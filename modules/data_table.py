@@ -47,6 +47,9 @@ class DataTable(ttk.Treeview):
     def pass_tree(self, tree):
         self.main_tree = tree
 
+    def delete_selected_record(self):
+        self.delete(self.focus())
+
     ##### events #####
     def __open_edit(self, event):
         DATATABLE_POSITION_Y_BORDER = 700
@@ -74,6 +77,7 @@ class DataTable(ttk.Treeview):
                 swin_for_update = swin.SendToWindow(self, key={ \
                     'customer_csv': self.customer_csv, \
                     'data': self.data, \
+                    'searched_data': self.searched_data, \
                     'use_datatable': self.use_datatable, \
                     'datatable': self, \
                     'record_tel_index': self.record_tel_index, \

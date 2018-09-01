@@ -227,6 +227,7 @@ class CustomerDialog(tk.Frame):
         self.addressbox.delete(0, tk.END)
         self.addressbox2.delete(0, tk.END)
         self.telbox.delete(0, tk.END)
+        self.swin_for_registration.reset_window_input()
 
     def __base_input(self, empty=False, data={}):
         if empty or len(data) == 0:
@@ -255,14 +256,14 @@ class CustomerDialog(tk.Frame):
             }
 
     def __make_str(self):
-        if self.swin_for_registration is None:
-            return ''
-        sendto_input = self.swin_for_registration.sendto_window_input()
         str = "\n" + \
             self.namebox.get() + '（' + self.namekanabox.get() + "）," + \
             self.zipcode_box1.get() + "-" + self.zipcode_box2.get() + "," + \
             self.addressbox.get() + "　" + self.addressbox2.get() + "," + \
             self.telbox.get()
+        if self.swin_for_registration is None:
+            return str
+        sendto_input = self.swin_for_registration.sendto_window_input()
         if sendto_input['name'] != '' and sendto_input['name_kana'] != '' and \
             sendto_input['zipcode1'] != '' and sendto_input['zipcode2'] != '' and \
             sendto_input['address1'] != '' and sendto_input['address2'] != '' and \
@@ -281,6 +282,7 @@ class CustomerDialog(tk.Frame):
         swin_for_add = swin.SendToWindow(self, key={
             'customer_csv': self.customer_csv, \
             'data': self.customers, \
+            'searched_data': self.searched_customers, \
             'use_datatable': True, \
             'datatable': self.sendto_tree, \
             'record_tel_index': RECORD_TEL_INDEX, \
@@ -298,10 +300,8 @@ class CustomerDialog(tk.Frame):
         # delete & rewrite self.customers
         delete_index = self.tree.index(self.tree.focus())
         del self.customers[delete_index]
-        del self.searched_customers[delete_index]
-        self.tree.data = self.customers
-        self.tree.searched_data = self.searched_customers
-        self.tree.delete(self.tree.focus())
+        self.searched_customers = self.customers[:]
+        self.tree.delete_selected_record()
         self.customer_csv.write_header()
         self.customer_csv.write_all_data(self.customers)
 
@@ -336,6 +336,7 @@ class CustomerDialog(tk.Frame):
         if result[-1:] == '|':
             result = result[:-1]
         self.customers[tree_index] = result.split(',')
+        self.searched_customers = self.customers[:]
         # update tree & sendto_tree
         self.tree.delete(*self.tree.get_children())
         for record in self.customers:
