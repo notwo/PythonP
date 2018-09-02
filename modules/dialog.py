@@ -6,6 +6,7 @@ from modules import data_table as table
 from modules import sendto_window as swin
 from modules import customer_csv as csvlib
 import re
+import zenhan
 
 CSV_HEADER = "お客様氏名,郵便番号,住所,電話番号,送り先情報"
 SENDTO_HEADER = "送り先氏名,郵便番号,送り先住所,送り先電話番号,日付,内容"
@@ -266,27 +267,32 @@ class CustomerDialog(tk.Frame):
             }
 
     def __make_str(self):
+        namekana = zenhan.h2z(self.namekanabox.get())
         str = "\n" + \
-            self.namebox.get() + '（' + self.namekanabox.get() + "）," + \
+            self.namebox.get() + '（' + namekana + "）," + \
             self.zipcode_box1.get() + "-" + self.zipcode_box2.get() + "," + \
             self.addressbox.get() + "　" + self.addressbox2.get() + "," + \
             self.telbox.get()
         if self.swin_for_registration is None:
             return str
         sendto_input = self.swin_for_registration.sendto_window_input()
+        sendto_namekana = zenhan.h2z(sendto_input['name_kana'])
         if sendto_input['name'] != '' and sendto_input['name_kana'] != '' and \
             sendto_input['zipcode1'] != '' and sendto_input['zipcode2'] != '' and \
             sendto_input['address1'] != '' and sendto_input['address2'] != '' and \
             sendto_input['tel'] != '' and \
             sendto_input['date'] != '':
             str += "," + \
-                sendto_input['name'] + '（' + sendto_input['name_kana'] + '）' + "/" + \
+                sendto_input['name'] + '（' + sendto_namekana + '）' + "/" + \
                 sendto_input['zipcode1'] + "-" + sendto_input['zipcode2'] + "/" + \
                 sendto_input['address1'] + "　" + sendto_input['address2'] + "/" + \
                 sendto_input['tel'] + "/" + \
                 sendto_input['date'] + "/" + \
                 sendto_input['order']
         return str
+
+    def _remove_invalid_char(self):
+        pass
 
     def __add_sendto(self, event):
         swin_for_add = swin.SendToWindow(self, key={

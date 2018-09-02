@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import os
+import zenhan
 
 class EditWindow(tk.Frame):
     def __init__(self, master=None, **key):
@@ -98,7 +99,7 @@ class EditWindow(tk.Frame):
     def __update_datatable(self):
         idx_tmp = int(self.index[1:], 16)
         idx = self.__specify_idx(idx_tmp)
-        name = self.win.namebox.get() + '（' + self.win.namekanabox.get() + '）'
+        name = self.win.namebox.get() + '（' + zenhan.h2z(self.win.namekanabox.get()) + '）'
         zipcode = self.win.zipcode_box1.get() + '-' + self.win.zipcode_box2.get()
         address = self.win.addressbox.get() + '　' + self.win.addressbox2.get()
         tel = self.win.telbox.get()

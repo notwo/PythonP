@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import zenhan
 
 class SendToWindow(tk.Frame):
     def __init__(self, master=None, **key):
@@ -183,7 +184,7 @@ class SendToWindow(tk.Frame):
 
     def __update_input(self):
         self.name = self.win.namebox.get()
-        self.namekana = self.win.namekanabox.get()
+        self.namekana = zenhan.h2z(self.win.namekanabox.get())
         self.zipcode1 = self.win.zipcode_box1.get()
         self.zipcode2 = self.win.zipcode_box2.get()
         self.address1 = self.win.addressbox.get()
