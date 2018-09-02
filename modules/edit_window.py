@@ -99,9 +99,9 @@ class EditWindow(tk.Frame):
     def __update_datatable(self):
         idx_tmp = int(self.index[1:], 16)
         idx = self.__specify_idx(idx_tmp)
-        name = self.win.namebox.get() + '（' + zenhan.h2z(self.win.namekanabox.get()) + '）'
-        zipcode = self.win.zipcode_box1.get() + '-' + self.win.zipcode_box2.get()
-        address = self.win.addressbox.get() + '　' + self.win.addressbox2.get()
+        name = self.win.namebox.get().replace(',', '') + '（' + zenhan.h2z(self.win.namekanabox.get().replace(',', '')) + '）'
+        zipcode = self.win.zipcode_box1.get().replace(',', '') + '-' + self.win.zipcode_box2.get().replace(',', '')
+        address = self.win.addressbox.get().replace(',', '') + '　' + self.win.addressbox2.get().replace(',', '')
         tel = self.win.telbox.get()
         if len(self.data[idx]) >= self.sendto_record_size:
             sendto = self.data[idx][-1]

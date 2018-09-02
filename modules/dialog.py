@@ -181,13 +181,13 @@ class CustomerDialog(tk.Frame):
         self.sendto_tree.pass_tree(self.tree)
 
     def __validate_input(self):
-        if self.namebox.get() == '' or \
-            self.namekanabox.get() == '' or \
-            self.zipcode_box1.get() == '' or \
-            self.zipcode_box2.get() == '' or \
-            self.addressbox.get() == '' or \
-            self.addressbox2.get() == '' or \
-            self.telbox.get() == '':
+        if self.namebox.get().replace(',', '') == '' or \
+            self.namekanabox.get().replace(',', '') == '' or \
+            self.zipcode_box1.get().replace(',', '') == '' or \
+            self.zipcode_box2.get().replace(',', '') == '' or \
+            self.addressbox.get().replace(',', '') == '' or \
+            self.addressbox2.get().replace(',', '') == '' or \
+            self.telbox.get().replace(',', '') == '':
             return False
         return True
 
@@ -269,30 +269,27 @@ class CustomerDialog(tk.Frame):
     def __make_str(self):
         namekana = zenhan.h2z(self.namekanabox.get())
         str = "\n" + \
-            self.namebox.get() + '（' + namekana + "）," + \
-            self.zipcode_box1.get() + "-" + self.zipcode_box2.get() + "," + \
-            self.addressbox.get() + "　" + self.addressbox2.get() + "," + \
+            self.namebox.get().replace(',', '') + '（' + namekana.replace(',', '') + "）," + \
+            self.zipcode_box1.get().replace(',', '') + "-" + self.zipcode_box2.get().replace(',', '') + "," + \
+            self.addressbox.get().replace(',', '') + "　" + self.addressbox2.get().replace(',', '') + "," + \
             self.telbox.get()
         if self.swin_for_registration is None:
             return str
         sendto_input = self.swin_for_registration.sendto_window_input()
-        sendto_namekana = zenhan.h2z(sendto_input['name_kana'])
-        if sendto_input['name'] != '' and sendto_input['name_kana'] != '' and \
-            sendto_input['zipcode1'] != '' and sendto_input['zipcode2'] != '' and \
-            sendto_input['address1'] != '' and sendto_input['address2'] != '' and \
+        sendto_namekana = zenhan.h2z(sendto_input['name_kana'].replace(',', ''))
+        if sendto_input['name'].replace(',', '') != '' and sendto_input['name_kana'].replace(',', '') != '' and \
+            sendto_input['zipcode1'].replace(',', '') != '' and sendto_input['zipcode2'].replace(',', '') != '' and \
+            sendto_input['address1'].replace(',', '') != '' and sendto_input['address2'].replace(',', '') != '' and \
             sendto_input['tel'] != '' and \
-            sendto_input['date'] != '':
+            sendto_input['date'].replace(',', '') != '':
             str += "," + \
-                sendto_input['name'] + '（' + sendto_namekana + '）' + "/" + \
-                sendto_input['zipcode1'] + "-" + sendto_input['zipcode2'] + "/" + \
-                sendto_input['address1'] + "　" + sendto_input['address2'] + "/" + \
+                sendto_input['name'].replace(',', '') + '（' + sendto_namekana + '）' + "/" + \
+                sendto_input['zipcode1'].replace(',', '') + "-" + sendto_input['zipcode2'].replace(',', '') + "/" + \
+                sendto_input['address1'].replace(',', '') + "　" + sendto_input['address2'].replace(',', '') + "/" + \
                 sendto_input['tel'] + "/" + \
-                sendto_input['date'] + "/" + \
-                sendto_input['order']
+                sendto_input['date'].replace(',', '') + "/" + \
+                sendto_input['order'].replace(',', '')
         return str
-
-    def _remove_invalid_char(self):
-        pass
 
     def __add_sendto(self, event):
         swin_for_add = swin.SendToWindow(self, key={
