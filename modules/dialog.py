@@ -292,6 +292,11 @@ class CustomerDialog(tk.Frame):
         return str
 
     def __add_sendto(self, event):
+        record_index = self.tree.focus()
+        if not record_index:
+            mbox.showwarning('', '追加対象のデータ（上部表）を選択してください。')
+            return
+
         swin_for_add = swin.SendToWindow(self, key={
             'customer_csv': self.customer_csv, \
             'data': self.customers, \
