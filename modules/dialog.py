@@ -314,6 +314,7 @@ class CustomerDialog(tk.Frame):
         delete_index = self.tree.index(self.tree.focus())
         del self.customers[delete_index]
         self.searched_customers = self.customers[:]
+        self.tree.update_searched_data(self.searched_customers)
         self.tree.delete_selected_record()
         self.customer_csv.write_header()
         self.customer_csv.write_all_data(self.customers)

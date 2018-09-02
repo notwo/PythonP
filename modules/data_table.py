@@ -50,6 +50,9 @@ class DataTable(ttk.Treeview):
     def delete_selected_record(self):
         self.delete(self.focus())
 
+    def update_searched_data(self, sdata):
+        self.searched_data = sdata[:]
+
     ##### events #####
     def __open_edit(self, event):
         DATATABLE_POSITION_Y_BORDER = 700
