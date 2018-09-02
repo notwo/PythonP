@@ -197,6 +197,15 @@ class CustomerDialog(tk.Frame):
             self.swin_for_registration = \
                 swin.SendToWindow(self, key={
                     'use_datatable': False, \
+                    'same_input_data': {
+                        'name': self.namebox.get(), \
+                        'name_kana': self.namekanabox.get(), \
+                        'zipcode1': self.zipcode_box1.get(), \
+                        'zipcode2': self.zipcode_box2.get(), \
+                        'address1': self.addressbox.get(), \
+                        'address2': self.addressbox2.get(), \
+                        'tel': self.telbox.get(), \
+                    }
                 })
             self.swin_for_registration.open(self.__base_input())
         else:
@@ -227,7 +236,8 @@ class CustomerDialog(tk.Frame):
         self.addressbox.delete(0, tk.END)
         self.addressbox2.delete(0, tk.END)
         self.telbox.delete(0, tk.END)
-        self.swin_for_registration.reset_window_input()
+        if self.swin_for_registration:
+            self.swin_for_registration.reset_window_input()
 
     def __base_input(self, empty=False, data={}):
         if empty or len(data) == 0:

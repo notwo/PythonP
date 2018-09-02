@@ -6,6 +6,7 @@ class SendToWindow(tk.Frame):
         self.customer_csv = None
         self.add_to_csv = key.get('key').get('add_to_csv')
         self.use_datatable = key.get('key').get('use_datatable')
+        self.same_input_data = key.get('key').get('same_input_data')
         if self.use_datatable or self.add_to_csv:
             self.customer_csv = key.get('key').get('customer_csv')
         if self.use_datatable:
@@ -130,13 +131,20 @@ class SendToWindow(tk.Frame):
     # copy base data to sendto
     def __same_as_address1(self):
         if self.chkval.get() == True:
-            self.win.namebox.insert(0, self.master.namebox.get())
-            self.win.namekanabox.insert(0, self.master.namekanabox.get())
-            self.win.zipcode_box1.insert(0, self.master.zipcode_box1.get())
-            self.win.zipcode_box2.insert(0, self.master.zipcode_box2.get())
-            self.win.addressbox.insert(0, self.master.addressbox.get())
-            self.win.addressbox2.insert(0, self.master.addressbox2.get())
-            self.win.telbox.insert(0, self.master.telbox.get())
+            self.win.namebox.delete(0, tk.END)
+            self.win.namebox.insert(0, self.same_input_data['name'])
+            self.win.namekanabox.delete(0, tk.END)
+            self.win.namekanabox.insert(0, self.same_input_data['name_kana'])
+            self.win.zipcode_box1.delete(0, tk.END)
+            self.win.zipcode_box1.insert(0, self.same_input_data['zipcode1'])
+            self.win.zipcode_box2.delete(0, tk.END)
+            self.win.zipcode_box2.insert(0, self.same_input_data['zipcode2'])
+            self.win.addressbox.delete(0, tk.END)
+            self.win.addressbox.insert(0, self.same_input_data['address1'])
+            self.win.addressbox2.delete(0, tk.END)
+            self.win.addressbox2.insert(0, self.same_input_data['address2'])
+            self.win.telbox.delete(0, tk.END)
+            self.win.telbox.insert(0, self.same_input_data['tel'])
 
     def sendto_window_input(self):
         return {
