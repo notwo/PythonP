@@ -116,11 +116,16 @@ class DataTable(ttk.Treeview):
         if not (record_index or self.sendto_length):
             return
         record = self.item(record_index)['values']
+        self.sendto_tree.delete(*self.sendto_tree.get_children())
         if len(record) >= self.sendto_length:
-            val = record[self.sendto_length - 1].split('/')
-            self.sendto_tree.delete(*self.sendto_tree.get_children())
-            self.sendto_tree.insert("","end",values=(val))
+            # with sendto
+            sendto_values = record[self.sendto_length - 1].split('|')
+            if sendto_values:
+                g = (d for d in sendto_values)
+                for v in g:
+                    self.sendto_tree.insert("","end",values=(v.split('/')))
         else:
+            # without sendto
             self.sendto_tree.delete(*self.sendto_tree.get_children())
 
     def __sort(self):

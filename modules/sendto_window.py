@@ -258,9 +258,6 @@ class SendToWindow(tk.Frame):
     #
     # add data
     #
-    def __add_csv(self):
-        pass
-
     def __add_datatable(self):
         if self.main_tree is None or self.datatable is None:
             return
@@ -271,10 +268,26 @@ class SendToWindow(tk.Frame):
             tel = '0' + str(tel)
             main_record[self.record_tel_index] = tel
         new_sendto_record = self.__input_record()
-        new_main_record = '/'.join(main_record) + '|' + '/'.join(new_sendto_record)
+        new_main_record = ','.join(main_record)
+        # todo: fix magic number
+        if len(main_record) >= 5:
+            new_main_record = new_main_record.replace('\n', '') + '|' + '/'.join(new_sendto_record) + '\n'
+        else:
+            new_main_record = new_main_record.replace('\n', '') + ',' + '/'.join(new_sendto_record) + '\n'
         self.datatable.insert("","end",values=new_sendto_record)
-        data_for_add = self.data[:]
         self.main_tree.delete(*self.main_tree.get_children())
+        data_for_add = self.data[:]
+        g = (d for d in data_for_add)
+        for line in g:
+            # compare representative data in array
+            if line[0] == main_record[0]:
+                index = self.data.index(line)
+                self.data[index] = new_main_record.split(',')
+                self.customer_csv.write_header()
+                self.customer_csv.write_all_data(self.data)
+                break
+        for record in self.data:
+            self.main_tree.insert("","end",values=(record))
 
     def __close_window(self, event):
         self.destroy()
