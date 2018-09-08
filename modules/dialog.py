@@ -44,7 +44,7 @@ class CustomerDialog(tk.Frame):
 
     def __set_frame(self):
         # tabs
-        self.notebook = ttk.Notebook(width=940, height=520)
+        self.notebook = ttk.Notebook(width=940, height=588)
         self.reg_tab = tk.Frame(self.notebook)
         self.lst_tab = tk.Frame(self.notebook)
         self.notebook.add(self.reg_tab, text="顧客情報登録", padding=2)
@@ -153,7 +153,7 @@ class CustomerDialog(tk.Frame):
         self.sendto_tree = table.DataTable(self, key={ \
             'frame': self.sendto_tree_frame, \
             'size': len(SENDTO_HEADER.split(',')), \
-            'height': 2, \
+            'height': 4, \
             'column_width': SENDTO_COLUMN_WIDTH_LIST, \
             'search_on': False, \
             'headings': SENDTO_HEADER.split(','), \
