@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import re
 import zenhan
 
 class SendToWindow(tk.Frame):
@@ -156,8 +157,8 @@ class SendToWindow(tk.Frame):
             'address1': self.address1, \
             'address2': self.address2, \
             'tel': self.tel, \
-            'date': self.date, \
-            'order': self.order, \
+            'date': re.sub('\n|\r\n|\r', '', self.date), \
+            'order': re.sub('\n|\r\n|\r', '', self.order), \
         }
 
     def reset_window_input(self):
@@ -210,42 +211,43 @@ class SendToWindow(tk.Frame):
     def __update_csv(self):
         if not self.datatable:
             return
+        change_target_record_index = self.datatable.focus()
+        change_target_record = self.datatable.item(change_target_record_index)['values']
+        main_record = self.main_tree.item(self.main_tree.focus())['values']
+        if len(main_record) < 5:
+            return
         children = self.datatable.get_children()
-        if not self.datatable.exists(children):
-            return
-        old_record = self.datatable.item(children)
-        if not old_record:
-            return
         self.datatable.delete(*children)
+        main_record = list(map(lambda d: re.sub('\n|\r\n|\r', '', str(d)), main_record))
+        main_record = ','.join(main_record)
+        tel = change_target_record[self.record_tel_index]
+        if str(tel)[0] != '0':
+            tel = '0' + str(tel)
+            change_target_record[self.record_tel_index] = tel
+        change_target_record = list(map(lambda d: re.sub('\n|\r\n|\r', '', str(d)), change_target_record))
         new_record = self.__input_record()
-        self.datatable.insert("","end",values=new_record)
+        sendto_record = main_record.split(',')[4]
+        new_sendto_record = []
+        g = (d for d in sendto_record.split('|'))
+        for record_str in g:
+            record = record_str.split('/')
+            if change_target_record == record:
+                new_sendto_record.append('/'.join(new_record))
+                self.datatable.insert("","end",values=new_record)
+            else:
+                new_sendto_record.append('/'.join(record))
+                self.datatable.insert("","end",values=record)
         # make deep copy of self.data.
         data_for_update = self.data[:]
 
         # update
         g = (d for d in data_for_update)
         for line in g:
-            old_record_values = old_record['values']
-            old_record_values = list(map(lambda d: str(d), old_record_values))
-            tel = old_record_values[self.record_tel_index]
-            sendto_data = line[-1]
-            # check either sendto_data is empty or not.
-            if not sendto_data:
-                continue
-
-            # check either line includes sendto_data or not.
-            sendto_ary = sendto_data.split('/')
-            if len(sendto_ary) < self.sendto_record_size:
-                continue
-
-            # fix tel if there isnt '0' in the head.
-            if str(tel)[0] != '0':
-                tel = '0' + str(tel)
-                old_record_values[self.record_tel_index] = tel
-                old_record_values = list(map(lambda d: str(d), old_record_values))
-            if old_record_values == sendto_ary:
+            _line = list(map(lambda d: re.sub('\n|\r\n|\r', '', str(d)), line))
+            sendto_line = _line[-1]
+            if sendto_record == sendto_line:
                 index_for_update = self.data.index(line)
-                self.data[index_for_update][-1] = '/'.join(new_record)
+                self.data[index_for_update][-1] = '|'.join(new_sendto_record)
                 self.customer_csv.write_header()
                 self.customer_csv.write_all_data(self.data)
         self.searched_data = self.data[:]
