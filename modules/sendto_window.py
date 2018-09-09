@@ -139,20 +139,43 @@ class SendToWindow(tk.Frame):
     # copy base data to sendto
     def __same_as_address1(self):
         if self.chkval.get() == True:
-            self.win.namebox.delete(0, tk.END)
-            self.win.namebox.insert(0, self.same_input_data['name'])
-            self.win.namekanabox.delete(0, tk.END)
-            self.win.namekanabox.insert(0, self.same_input_data['name_kana'])
-            self.win.zipcode_box1.delete(0, tk.END)
-            self.win.zipcode_box1.insert(0, self.same_input_data['zipcode1'])
-            self.win.zipcode_box2.delete(0, tk.END)
-            self.win.zipcode_box2.insert(0, self.same_input_data['zipcode2'])
-            self.win.addressbox.delete(0, tk.END)
-            self.win.addressbox.insert(0, self.same_input_data['address1'])
-            self.win.addressbox2.delete(0, tk.END)
-            self.win.addressbox2.insert(0, self.same_input_data['address2'])
-            self.win.telbox.delete(0, tk.END)
-            self.win.telbox.insert(0, self.same_input_data['tel'])
+            if self.same_input_data:
+                self.win.namebox.delete(0, tk.END)
+                self.win.namebox.insert(0, self.same_input_data['name'])
+                self.win.namekanabox.delete(0, tk.END)
+                self.win.namekanabox.insert(0, self.same_input_data['name_kana'])
+                self.win.zipcode_box1.delete(0, tk.END)
+                self.win.zipcode_box1.insert(0, self.same_input_data['zipcode1'])
+                self.win.zipcode_box2.delete(0, tk.END)
+                self.win.zipcode_box2.insert(0, self.same_input_data['zipcode2'])
+                self.win.addressbox.delete(0, tk.END)
+                self.win.addressbox.insert(0, self.same_input_data['address1'])
+                self.win.addressbox2.delete(0, tk.END)
+                self.win.addressbox2.insert(0, self.same_input_data['address2'])
+                self.win.telbox.delete(0, tk.END)
+                self.win.telbox.insert(0, self.same_input_data['tel'])
+            elif self.main_tree:
+                main_record = self.main_tree.item(self.main_tree.focus())['values']
+                name = main_record[0].split('（')
+                zipcode = main_record[1].split('-')
+                address = main_record[2].split('　')
+                tel = main_record[3]
+                if str(tel) != '' and str(tel)[0] != '0':
+                    tel = '0' + str(tel)
+                self.win.namebox.delete(0, tk.END)
+                self.win.namebox.insert(0, name[0])
+                self.win.namekanabox.delete(0, tk.END)
+                self.win.namekanabox.insert(0, self.util.delete_last_str(name[1], '|'))
+                self.win.zipcode_box1.delete(0, tk.END)
+                self.win.zipcode_box1.insert(0, zipcode[0])
+                self.win.zipcode_box2.delete(0, tk.END)
+                self.win.zipcode_box2.insert(0, zipcode[1])
+                self.win.addressbox.delete(0, tk.END)
+                self.win.addressbox.insert(0, address[0])
+                self.win.addressbox2.delete(0, tk.END)
+                self.win.addressbox2.insert(0, address[1])
+                self.win.telbox.delete(0, tk.END)
+                self.win.telbox.insert(0, tel)
 
 
 
