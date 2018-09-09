@@ -47,11 +47,17 @@ class DataTable(ttk.Treeview):
     def pass_tree(self, tree):
         self.main_tree = tree
 
+
+
     def delete_selected_record(self):
         self.delete(self.focus())
 
+
+
     def update_searched_data(self, sdata):
         self.searched_data = sdata[:]
+
+
 
     ##### events #####
     def __open_edit(self, event):
@@ -104,10 +110,14 @@ class DataTable(ttk.Treeview):
                     'customer_csv': self.customer_csv, \
                     'record': record, \
                     'data': self.data, \
+                    'searched_data': self.searched_data, \
                     'record_index': record_index, \
                     'datatable': self, \
                     'sendto_record_size': self.size, \
+                    'record_tel_index': self.record_tel_index, \
                 })
+
+
 
     def __show_sendto(self, event):
         y = self.winfo_pointery() - self.winfo_rooty()
@@ -127,6 +137,8 @@ class DataTable(ttk.Treeview):
         else:
             # without sendto
             self.sendto_tree.delete(*self.sendto_tree.get_children())
+
+
 
     def __sort(self):
         if not self.search_on:

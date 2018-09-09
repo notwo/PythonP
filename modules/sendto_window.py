@@ -31,6 +31,8 @@ class SendToWindow(tk.Frame):
         self.date = ''
         self.order = ''
 
+
+
     def open(self, base_input):
         # initialize toplevel window
         super().__init__(None)
@@ -130,6 +132,8 @@ class SendToWindow(tk.Frame):
         win.cancel.pack()
         self.win = win
 
+
+
     # copy base data to sendto
     def __same_as_address1(self):
         if self.chkval.get() == True:
@@ -148,6 +152,8 @@ class SendToWindow(tk.Frame):
             self.win.telbox.delete(0, tk.END)
             self.win.telbox.insert(0, self.same_input_data['tel'])
 
+
+
     def sendto_window_input(self):
         return {
             'name': self.name, \
@@ -161,6 +167,8 @@ class SendToWindow(tk.Frame):
             'order': re.sub('\n|\r\n|\r', '', self.order), \
         }
 
+
+
     def reset_window_input(self):
         self.name = ''
         self.namekana = ''
@@ -171,6 +179,8 @@ class SendToWindow(tk.Frame):
         self.tel = ''
         self.date = ''
         self.order = ''
+
+
 
     ##### events #####
     def __setup_sendto_input(self, event):
@@ -183,6 +193,8 @@ class SendToWindow(tk.Frame):
                 self.__update_datatable()
         self.destroy()
 
+
+
     def __update_input(self):
         self.name = self.win.namebox.get().replace(',', '')
         self.namekana = zenhan.h2z(self.win.namekanabox.get().replace(',', ''))
@@ -194,6 +206,8 @@ class SendToWindow(tk.Frame):
         self.date = self.win.datebox.get().replace(',', '')
         self.order = self.win.orderbox.get().replace(',', '')
 
+
+
     def __input_record(self):
         input = self.sendto_window_input()
         new_record = []
@@ -204,6 +218,8 @@ class SendToWindow(tk.Frame):
         new_record.append(input['date'])
         new_record.append(input['order'])
         return new_record
+
+
 
     #
     # update data
@@ -252,10 +268,14 @@ class SendToWindow(tk.Frame):
                 self.customer_csv.write_all_data(self.data)
         self.searched_data = self.data[:]
 
+
+
     def __update_datatable(self):
         self.main_tree.delete(*self.main_tree.get_children())
         for record in self.data:
             self.main_tree.insert("","end",values=(record))
+
+
 
     #
     # add data
@@ -285,11 +305,14 @@ class SendToWindow(tk.Frame):
             if line[0] == main_record[0]:
                 index = self.data.index(line)
                 self.data[index] = new_main_record.split(',')
+                self.searched_data = self.data[:]
                 self.customer_csv.write_header()
                 self.customer_csv.write_all_data(self.data)
                 break
         for record in self.data:
             self.main_tree.insert("","end",values=(record))
+
+
 
     def __close_window(self, event):
         self.destroy()

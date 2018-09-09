@@ -8,10 +8,12 @@ class EditWindow(tk.Frame):
         super().__init__(master)
         self.record = key.get('key').get('record')
         self.data = key.get('key').get('data')
+        self.searched_data = key.get('key').get('searched_data')
         self.index = key.get('key').get('record_index')
         self.customer_csv = key.get('key').get('customer_csv')
         self.datatable = key.get('key').get('datatable')
         self.sendto_record_size = key.get('key').get('sendto_record_size')
+        self.record_tel_index = key.get('key').get('record_tel_index')
 
         win = tk.Toplevel(self)
         win.transient(self.master)
@@ -19,6 +21,8 @@ class EditWindow(tk.Frame):
         win.title("顧客情報編集")
         win.grab_set()
         self.__set_form_widgets(win)
+
+
 
     def __set_form_widgets(self, win):
         #### frame ####
@@ -92,11 +96,17 @@ class EditWindow(tk.Frame):
         win.cancel.pack()
         self.win = win
 
+
+
     def __setup_input(self, event):
         self.__update_datatable()
         self.__update_csv()
 
+
+
     def __update_datatable(self):
+        if not self.datatable:
+            return
         idx_tmp = int(self.index[1:], 16)
         idx = self.__specify_idx(idx_tmp)
         name = self.win.namebox.get().replace(',', '') + '（' + zenhan.h2z(self.win.namekanabox.get().replace(',', '')) + '）'
@@ -107,18 +117,35 @@ class EditWindow(tk.Frame):
             sendto = self.data[idx][-1]
             self.data[idx] = [name, zipcode, address, tel, sendto]
         else:
+            if str(tel)[-1] != '\n':
+                tel = str(tel) + '\n'
             self.data[idx] = [name, zipcode, address, tel]
+        self.searched_data = self.data[:]
 
+        focused_record = self.datatable.item(self.index)['values']
         # delete all data and set sorted data
-        self.master.delete(*self.master.get_children())
+        self.datatable.delete(*self.datatable.get_children())
         g = (d for d in self.data)
         for v in g:
-            self.master.insert("","end",values=(v))
+            self.datatable.insert("","end",values=(v))
+
+        # focus origin selected record
+        focused_record = list(map(lambda d: str(d), focused_record))
+        tel = focused_record[self.record_tel_index]
+        if str(tel)[0] != '0':
+            tel = '0' + str(tel)
+            focused_record[self.record_tel_index] = tel
+        #self.searched_data
+
         self.destroy()
+
+
 
     def __update_csv(self):
         self.customer_csv.write_header()
         self.customer_csv.write_all_data(self.data)
+
+
 
     def __specify_idx(self, idx_tmp):
         if idx_tmp > len(self.data):
@@ -129,6 +156,8 @@ class EditWindow(tk.Frame):
         else:
             idx = idx_tmp - 1
         return idx
+
+
 
     def __close_window(self, event):
         self.destroy()

@@ -42,6 +42,8 @@ class CustomerDialog(tk.Frame):
         self.__set_treeview()
         self.__set_form_widgets()
 
+
+
     def __set_frame(self):
         # tabs
         self.notebook = ttk.Notebook(width=940, height=588)
@@ -77,6 +79,8 @@ class CustomerDialog(tk.Frame):
         self.removebutton_frame.pack(fill=tk.BOTH)
         self.button_frame = tk.Frame(self.reg_tab, pady=8)
         self.button_frame.pack(fill=tk.BOTH)
+
+
 
     def __set_form_widgets(self):
         #### name ####
@@ -143,11 +147,15 @@ class CustomerDialog(tk.Frame):
         self.remove_sendto.pack()
         ### /sub widgets ###
 
+
+
     # maybe unnecessary func...
     def __set_list(self):
         pass
         #self.listbox = listbox.CustomerListBox(self, key={'frame': self.list_frame})
         #self.listbox.pack()
+
+
 
     def __set_treeview(self):
         self.sendto_tree = table.DataTable(self, key={ \
@@ -175,10 +183,13 @@ class CustomerDialog(tk.Frame):
             'sendto_length': len(CSV_HEADER.split(',')), \
             'sendto_tree': self.sendto_tree, \
             'customer_csv': self.customer_csv, \
+            'record_tel_index': RECORD_TEL_INDEX, \
         })
         self.tree.pack()
         self.sendto_tree.pack()
         self.sendto_tree.pass_tree(self.tree)
+
+
 
     def __validate_input(self):
         if self.namebox.get().replace(',', '') == '' or \
@@ -190,6 +201,8 @@ class CustomerDialog(tk.Frame):
             self.telbox.get().replace(',', '') == '':
             return False
         return True
+
+
 
     ##### events #####
     def __open_sendto_window(self, event):
@@ -212,6 +225,8 @@ class CustomerDialog(tk.Frame):
         else:
             data = self.swin_for_registration.sendto_window_input()
             self.swin_for_registration.open(self.__base_input(data=data))
+
+
 
     def __write_csv(self, event):
         if not self.__validate_input():
@@ -240,6 +255,8 @@ class CustomerDialog(tk.Frame):
         if self.swin_for_registration:
             self.swin_for_registration.reset_window_input()
 
+
+
     def __base_input(self, empty=False, data={}):
         if empty or len(data) == 0:
             return {
@@ -266,6 +283,8 @@ class CustomerDialog(tk.Frame):
                 'order': data['order'], \
             }
 
+
+
     def __make_str(self):
         namekana = zenhan.h2z(self.namekanabox.get())
         str = "\n" + \
@@ -291,6 +310,8 @@ class CustomerDialog(tk.Frame):
                 sendto_input['order'].replace(',', '')
         return str
 
+
+
     def __add_sendto(self, event):
         record_index = self.tree.focus()
         if not record_index:
@@ -310,6 +331,8 @@ class CustomerDialog(tk.Frame):
         })
         swin_for_add.open(self.__base_input(empty=True))
 
+
+
     def __remove_record(self, event):
         if (self.tree is None or not self.tree.focus()):
             return
@@ -323,6 +346,8 @@ class CustomerDialog(tk.Frame):
         self.tree.delete_selected_record()
         self.customer_csv.write_header()
         self.customer_csv.write_all_data(self.customers)
+
+
 
     def __remove_sendto_record(self, event):
         if (self.tree is None or not self.tree.focus()):
@@ -347,7 +372,7 @@ class CustomerDialog(tk.Frame):
         # delete & rewrite self.customers
         sendto_records_str = target_record.pop()
         sendto_records = sendto_records_str.split('|')
-        result = ','.join(target_record)
+        result = ','.join(target_record) + ','
         g = (d for d in sendto_records)
         for sendto_line in g:
             if (selected_sendto_record != sendto_line):
@@ -355,6 +380,11 @@ class CustomerDialog(tk.Frame):
         if result[-1:] == '|':
             result = result[:-1]
         self.customers[tree_index] = result.split(',')
+        if len(self.customers[tree_index]) < len(COLUMN_WIDTH_LIST):
+            tel = self.customers[tree_index][RECORD_TEL_INDEX]
+            if str(tel)[-1] != '\n':
+                tel = str(tel) + '\n'
+                self.customers[tree_index][RECORD_TEL_INDEX] = tel
         self.searched_customers = self.customers[:]
         # update tree & sendto_tree
         self.tree.delete(*self.tree.get_children())
@@ -364,6 +394,8 @@ class CustomerDialog(tk.Frame):
         # update csv
         self.customer_csv.write_header()
         self.customer_csv.write_all_data(self.customers)
+
+
 
     def __search_by_name(self):
         search_word = self.searchBox.get()
