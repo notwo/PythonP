@@ -5,6 +5,7 @@ from tkinter import messagebox as mbox
 from modules import data_table as table
 from modules import sendto_window as swin
 from modules import customer_csv as csvlib
+from lib import util
 import re
 import zenhan
 
@@ -22,6 +23,7 @@ class CustomerDialog(tk.Frame):
         self.master.title('顧客管理テスト')
 
         # instance variables
+        self.util = util.Util()
         self.customers = []
         self.searched_customers = []
         self.search_check = None
@@ -362,7 +364,7 @@ class CustomerDialog(tk.Frame):
         if not mbox.askokcancel('askokcancel', '選択中の送付先を削除しますがよろしいですか？'):
             return
         selected_sendto_record = self.sendto_tree.item(self.sendto_tree.focus())['values']
-        selected_sendto_record = list(map(str, selected_sendto_record))
+        selected_sendto_record = self.util.change_all_records_to_str_in_array(array=selected_sendto_record)
         # fix tel if there isnt '0' in the head.
         tel = selected_sendto_record[RECORD_TEL_INDEX]
         if str(tel) != '' and str(tel)[0] != '0':
@@ -377,8 +379,7 @@ class CustomerDialog(tk.Frame):
         for sendto_line in g:
             if (selected_sendto_record != sendto_line):
                 result += sendto_line + '|'
-        if result[-1:] == '|':
-            result = result[:-1]
+        result = self.util.delete_last_str(result, '|')
         self.customers[tree_index] = result.split(',')
         if len(self.customers[tree_index]) < len(COLUMN_WIDTH_LIST):
             tel = self.customers[tree_index][RECORD_TEL_INDEX]

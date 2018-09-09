@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import os
 import zenhan
+from lib import util
 
 class EditWindow(tk.Frame):
     def __init__(self, master=None, **key):
@@ -14,6 +15,7 @@ class EditWindow(tk.Frame):
         self.datatable = key.get('key').get('datatable')
         self.sendto_record_size = key.get('key').get('sendto_record_size')
         self.record_tel_index = key.get('key').get('record_tel_index')
+        self.util = util.Util()
 
         win = tk.Toplevel(self)
         win.transient(self.master)
@@ -130,7 +132,7 @@ class EditWindow(tk.Frame):
             self.datatable.insert("","end",values=(v))
 
         # focus origin selected record
-        focused_record = list(map(lambda d: str(d), focused_record))
+        focused_record = self.util.change_all_records_to_str_in_array(array=focused_record)
         tel = focused_record[self.record_tel_index]
         if str(tel)[0] != '0':
             tel = '0' + str(tel)

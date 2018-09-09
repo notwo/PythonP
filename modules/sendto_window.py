@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import re
 import zenhan
+from lib import util
 
 class SendToWindow(tk.Frame):
     def __init__(self, master=None, **key):
@@ -19,6 +20,7 @@ class SendToWindow(tk.Frame):
             self.record_tel_index = key.get('key').get('record_tel_index')
             self.sendto_record_size = key.get('key').get('sendto_record_size')
             self.main_tree = key.get('key').get('main_tree')
+        self.util = util.Util()
 
         # instance variables
         self.name = ''
@@ -234,13 +236,13 @@ class SendToWindow(tk.Frame):
             return
         children = self.datatable.get_children()
         self.datatable.delete(*children)
-        main_record = list(map(lambda d: re.sub('\n|\r\n|\r', '', str(d)), main_record))
+        main_record = self.util.change_all_records_to_str_in_array_without_newline(array=main_record)
         main_record = ','.join(main_record)
         tel = change_target_record[self.record_tel_index]
         if str(tel)[0] != '0':
             tel = '0' + str(tel)
             change_target_record[self.record_tel_index] = tel
-        change_target_record = list(map(lambda d: re.sub('\n|\r\n|\r', '', str(d)), change_target_record))
+        change_target_record = self.util.change_all_records_to_str_in_array_without_newline(array=change_target_record)
         new_record = self.__input_record()
         sendto_record = main_record.split(',')[4]
         new_sendto_record = []
@@ -259,7 +261,7 @@ class SendToWindow(tk.Frame):
         # update
         g = (d for d in data_for_update)
         for line in g:
-            _line = list(map(lambda d: re.sub('\n|\r\n|\r', '', str(d)), line))
+            _line = self.util.change_all_records_to_str_in_array_without_newline(array=line)
             sendto_line = _line[-1]
             if sendto_record == sendto_line:
                 index_for_update = self.data.index(line)
