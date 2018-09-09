@@ -289,6 +289,8 @@ class SendToWindow(tk.Frame):
             if sendto_record == sendto_line:
                 index_for_update = self.data.index(line)
                 self.data[index_for_update][-1] = '|'.join(new_sendto_record)
+                if self.data[index_for_update][-1][-1] != '\n':
+                    self.data[index_for_update][-1] += '\n'
                 self.customer_csv.write_header()
                 self.customer_csv.write_all_data(self.data)
         self.searched_data = self.data[:]
