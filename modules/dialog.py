@@ -380,6 +380,8 @@ class CustomerDialog(tk.Frame):
             if (selected_sendto_record != sendto_line):
                 result += sendto_line + '|'
         result = self.util.delete_last_str(result, '|')
+        if len(sendto_records) <= 1:
+            result = result[:-1]
         self.customers[tree_index] = result.split(',')
         if len(self.customers[tree_index]) < len(COLUMN_WIDTH_LIST):
             tel = self.customers[tree_index][RECORD_TEL_INDEX]
