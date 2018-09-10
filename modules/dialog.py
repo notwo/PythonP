@@ -73,12 +73,14 @@ class CustomerDialog(tk.Frame):
         self.search_frame.pack(fill=tk.BOTH)
         self.tree_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
         self.tree_frame.pack(fill=tk.BOTH)
+        self.removebutton_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
+        self.removebutton_frame.pack(fill=tk.BOTH)
         self.sendto_tree_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
         self.sendto_tree_frame.pack(fill=tk.BOTH)
         self.addsendtobutton_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
         self.addsendtobutton_frame.pack(fill=tk.BOTH)
-        self.removebutton_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
-        self.removebutton_frame.pack(fill=tk.BOTH)
+        self.removesendtobutton_frame = tk.Frame(self.lst_tab, padx=10, pady=10)
+        self.removesendtobutton_frame.pack(fill=tk.BOTH)
         self.button_frame = tk.Frame(self.reg_tab, pady=8)
         self.button_frame.pack(fill=tk.BOTH)
 
@@ -144,7 +146,7 @@ class CustomerDialog(tk.Frame):
         self.remove.bind("<ButtonPress>", self.__remove_record)
         self.remove.pack()
         ### delete sendto button ###
-        self.remove_sendto = tk.Button(self.removebutton_frame, text="送り先を削除", width=5, height=2, padx=44, pady=1)
+        self.remove_sendto = tk.Button(self.removesendtobutton_frame, text="送り先を削除", width=5, height=2, padx=44, pady=1)
         self.remove_sendto.bind("<ButtonPress>", self.__remove_sendto_record)
         self.remove_sendto.pack()
         ### /sub widgets ###
