@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox as mbox
 import re
 import zenhan
 from lib import util
@@ -40,7 +41,7 @@ class SendToWindow(tk.Frame):
         super().__init__(None)
         win = tk.Toplevel(self)
         win.transient(self.master)
-        win.geometry("640x640")
+        win.geometry("640x740")
         win.title("送り先情報入力")
         win.grab_set()
         #### frame ####
@@ -124,12 +125,16 @@ class SendToWindow(tk.Frame):
         win.orderbox = tk.Entry(win.reg_frame9, width=65)
         win.orderbox.pack(side="left")
         win.orderbox.insert(0, base_input['order'])
-        #### ok & close button ####
-        win.ok = tk.Button(win.reg_frame10, text="OK", width=5, height=2, padx=44, pady=1)
+        #### ok button ####
+        win.ok = tk.Button(win.reg_frame10, text="送り先登録", width=5, height=2, padx=44, pady=1)
         win.ok.bind("<ButtonPress>", self.__setup_sendto_input)
         win.ok.pack()
+        #### sequential register button ####
+        win.sequential_ok = tk.Button(win.reg_frame10, text="送り先を連続登録", width=5, height=2, padx=44, pady=1)
+        win.sequential_ok.bind("<ButtonPress>", self.__setup_sendto_input)
+        win.sequential_ok.pack()
         #### cancel & close button ####
-        win.cancel = tk.Button(win.reg_frame10, text="Cancel", width=5, height=2, padx=44, pady=1)
+        win.cancel = tk.Button(win.reg_frame10, text="キャンセル", width=5, height=2, padx=44, pady=1)
         win.cancel.bind("<ButtonPress>", self.__close_window)
         win.cancel.pack()
         self.win = win
@@ -209,6 +214,9 @@ class SendToWindow(tk.Frame):
 
     ##### events #####
     def __setup_sendto_input(self, event):
+        if not self.__validate_input():
+            mbox.showwarning('', '未入力の項目があります。')
+            return
         self.__update_input()
         if self.use_datatable:
             if self.add_to_csv:
@@ -217,6 +225,20 @@ class SendToWindow(tk.Frame):
                 self.__update_csv()
                 self.__update_datatable()
         self.destroy()
+
+
+
+    def __validate_input(self):
+        if self.win.namebox.get().replace(',', '') == '' or \
+            self.win.namekanabox.get().replace(',', '') == '' or \
+            self.win.zipcode_box1.get().replace(',', '') == '' or \
+            self.win.zipcode_box2.get().replace(',', '') == '' or \
+            self.win.addressbox.get().replace(',', '') == '' or \
+            self.win.addressbox2.get().replace(',', '') == '' or \
+            self.win.telbox.get().replace(',', '') == '' or \
+            self.win.datebox.get().replace(',', '') == '':
+            return False
+        return True
 
 
 
