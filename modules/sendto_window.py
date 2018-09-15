@@ -11,6 +11,7 @@ class SendToWindow(tk.Frame):
         self.add_to_csv = key.get('key').get('add_to_csv')
         self.use_datatable = key.get('key').get('use_datatable')
         self.same_input_data = key.get('key').get('same_input_data')
+        self.sequential_state = key.get('key').get('sequential_state')
         if self.use_datatable or self.add_to_csv:
             self.customer_csv = key.get('key').get('customer_csv')
         if self.use_datatable:
@@ -33,6 +34,9 @@ class SendToWindow(tk.Frame):
         self.tel = ''
         self.date = ''
         self.order = ''
+
+        # multiple sendto input variables
+        self.sendto_collection = []
 
 
 
@@ -130,8 +134,8 @@ class SendToWindow(tk.Frame):
         win.ok.bind("<ButtonPress>", self.__setup_sendto_input)
         win.ok.pack()
         #### sequential register button ####
-        win.sequential_ok = tk.Button(win.reg_frame10, text="送り先を連続登録", width=5, height=2, padx=44, pady=1)
-        win.sequential_ok.bind("<ButtonPress>", self.__setup_sendto_input)
+        win.sequential_ok = tk.Button(win.reg_frame10, text="送り先を連続登録", width=5, height=2, padx=44, pady=1, state=self.sequential_state)
+        win.sequential_ok.bind("<ButtonPress>", self.__setup_sequential_sendto_input)
         win.sequential_ok.pack()
         #### cancel & close button ####
         win.cancel = tk.Button(win.reg_frame10, text="キャンセル", width=5, height=2, padx=44, pady=1)
@@ -184,6 +188,16 @@ class SendToWindow(tk.Frame):
 
 
 
+    def sendto_collection_input(self):
+        return self.sendto_collection
+
+
+
+    def reset_sendto_collection_input(self):
+        self.sendto_collection = []
+
+
+
     def sendto_window_input(self):
         return {
             'name': self.name, \
@@ -212,19 +226,64 @@ class SendToWindow(tk.Frame):
 
 
 
+    def __reset_form_input(self):
+        self.win.namebox.delete(0, tk.END)
+        self.win.namekanabox.delete(0, tk.END)
+        self.win.zipcode_box1.delete(0, tk.END)
+        self.win.zipcode_box2.delete(0, tk.END)
+        self.win.addressbox.delete(0, tk.END)
+        self.win.addressbox2.delete(0, tk.END)
+        self.win.telbox.delete(0, tk.END)
+        self.win.datebox.delete(0, tk.END)
+        self.win.orderbox.delete(0, tk.END)
+
+
+
     ##### events #####
-    def __setup_sendto_input(self, event):
+    def __setup_sendto_input(self, event, sequential=False):
+        # validate
         if not self.__validate_input():
             mbox.showwarning('', '未入力の項目があります。')
             return
+
+        # set instance val from window input
         self.__update_input()
+
+        # datatable work
         if self.use_datatable:
             if self.add_to_csv:
                 self.__add_datatable()
             else:
                 self.__update_csv()
                 self.__update_datatable()
-        self.destroy()
+
+        # close window
+        if sequential:
+            self.__register_sendto_collection()
+        else:
+            self.destroy()
+
+
+
+    def __setup_sequential_sendto_input(self, event):
+        # 'disabled' state but dont make an effect for some reason, so we must explicitly check its status
+        if self.win.sequential_ok['state'] == tk.DISABLED:
+            return
+        self.__setup_sendto_input(event=None, sequential=True)
+
+
+
+    def __register_sendto_collection(self):
+        # memorize all sendto input
+        self.sendto_collection.append('/'.join([ \
+            self.name + '（' + self.namekana + '）', \
+            self.zipcode1 + '-' + self.zipcode2, \
+            self.address1 + '　' + self.address2, \
+            self.tel, \
+            self.date, \
+            self.order \
+        ]))
+        self.__reset_form_input()
 
 
 
@@ -364,4 +423,5 @@ class SendToWindow(tk.Frame):
 
 
     def __close_window(self, event):
+        self.reset_sendto_collection_input()
         self.destroy()

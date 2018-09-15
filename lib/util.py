@@ -14,3 +14,8 @@ class Util():
         if target[-1:] == char:
             target = target[:-1]
         return target
+
+    def delete_first_str(self, target, char):
+        if target[0] == char:
+            target = target[1:]
+        return target

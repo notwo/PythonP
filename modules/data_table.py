@@ -38,7 +38,6 @@ class DataTable(ttk.Treeview):
             for record in self.data:
                 self.insert("","end",values=(record))
         self.main_tree = None
-        
         # set each row's event
         self.bind('<Double-1>', self.__open_edit)
         if self.show_directly:
@@ -92,6 +91,7 @@ class DataTable(ttk.Treeview):
                     'record_tel_index': self.record_tel_index, \
                     'sendto_record_size': self.size, \
                     'main_tree': self.main_tree, \
+                    'sequential_state': tk.DISABLED, \
                 })
                 swin_for_update.open({
                     'name': sendto_name, \

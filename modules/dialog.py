@@ -223,6 +223,7 @@ class CustomerDialog(tk.Frame):
                         'address1': self.addressbox.get(), \
                         'address2': self.addressbox2.get(), \
                         'tel': self.telbox.get(), \
+                        'sequential_state': tk.NORMAL, \
                     }
                 })
             self.swin_for_registration.open(self.__base_input())
@@ -258,6 +259,7 @@ class CustomerDialog(tk.Frame):
         self.telbox.delete(0, tk.END)
         if self.swin_for_registration:
             self.swin_for_registration.reset_window_input()
+            self.swin_for_registration.reset_sendto_collection_input()
 
 
 
@@ -291,13 +293,14 @@ class CustomerDialog(tk.Frame):
 
     def __make_str(self):
         namekana = zenhan.h2z(self.namekanabox.get())
-        str = "\n" + \
+        result_str = "\n" + \
             self.namebox.get().replace(',', '') + '（' + namekana.replace(',', '') + "）," + \
             self.zipcode_box1.get().replace(',', '') + "-" + self.zipcode_box2.get().replace(',', '') + "," + \
             self.addressbox.get().replace(',', '') + "　" + self.addressbox2.get().replace(',', '') + "," + \
             self.telbox.get()
         if self.swin_for_registration is None:
-            return str
+            return result_str
+        result_sendto_str = ''
         sendto_input = self.swin_for_registration.sendto_window_input()
         sendto_namekana = zenhan.h2z(sendto_input['name_kana'].replace(',', ''))
         if sendto_input['name'].replace(',', '') != '' and sendto_input['name_kana'].replace(',', '') != '' and \
@@ -305,14 +308,17 @@ class CustomerDialog(tk.Frame):
             sendto_input['address1'].replace(',', '') != '' and sendto_input['address2'].replace(',', '') != '' and \
             sendto_input['tel'] != '' and \
             sendto_input['date'].replace(',', '') != '':
-            str += "," + \
+            result_sendto_str += "," + \
                 sendto_input['name'].replace(',', '') + '（' + sendto_namekana + '）' + "/" + \
                 sendto_input['zipcode1'].replace(',', '') + "-" + sendto_input['zipcode2'].replace(',', '') + "/" + \
                 sendto_input['address1'].replace(',', '') + "　" + sendto_input['address2'].replace(',', '') + "/" + \
                 sendto_input['tel'] + "/" + \
                 sendto_input['date'].replace(',', '') + "/" + \
                 sendto_input['order'].replace(',', '')
-        return str
+            if len(self.swin_for_registration.sendto_collection_input()) > 0:
+                result_sendto_str = "," + '|'.join(self.swin_for_registration.sendto_collection_input()) + '|' + self.util.delete_first_str(result_sendto_str, ',')
+            result_str += result_sendto_str
+        return result_str
 
 
 
@@ -332,6 +338,7 @@ class CustomerDialog(tk.Frame):
             'sendto_record_size': len(SENDTO_HEADER.split(',')), \
             'add_to_csv': True, \
             'main_tree': self.tree, \
+            'sequential_state': tk.NORMAL, \
         })
         swin_for_add.open(self.__base_input(empty=True))
 
