@@ -339,26 +339,34 @@ class SendToWindow(tk.Frame):
         change_target_record_index = self.datatable.focus()
         change_target_record = self.datatable.item(change_target_record_index)['values']
         main_record = self.main_tree.item(self.main_tree.focus())['values']
+        selected_sendto_index = self.datatable.focus()
+        selected_sendto_record = self.datatable.item(selected_sendto_index)['values']
+        sendto_tel = selected_sendto_record[self.record_tel_index]
+        if str(sendto_tel)[0] != '0':
+            sendto_tel = '0' + str(sendto_tel)
+            selected_sendto_record[self.record_tel_index] = sendto_tel
         if len(main_record) < 5:
             return
         children = self.datatable.get_children()
         self.datatable.delete(*children)
         main_record = self.util.change_all_records_to_str_in_array_without_newline(array=main_record)
-        main_record = ','.join(main_record)
         tel = change_target_record[self.record_tel_index]
         if str(tel)[0] != '0':
             tel = '0' + str(tel)
             change_target_record[self.record_tel_index] = tel
         change_target_record = self.util.change_all_records_to_str_in_array_without_newline(array=change_target_record)
         new_record = self.__input_record()
-        sendto_record = main_record.split(',')[4]
+        sendto_record = main_record[-1]
         new_sendto_record = []
         g = (d for d in sendto_record.split('|'))
         for record_str in g:
             record = record_str.split('/')
             if change_target_record == record:
                 new_sendto_record.append('/'.join(new_record))
-                self.datatable.insert("","end",values=new_record)
+                iid = self.datatable.insert("","end",values=new_record)
+                if selected_sendto_record == record and self.datatable.exists(iid):
+                    self.datatable.focus(iid)
+                    self.datatable.selection_set(iid)
             else:
                 new_sendto_record.append('/'.join(record))
                 self.datatable.insert("","end",values=record)
@@ -367,6 +375,7 @@ class SendToWindow(tk.Frame):
 
         # update
         g = (d for d in data_for_update)
+        print(new_sendto_record)
         for line in g:
             _line = self.util.change_all_records_to_str_in_array_without_newline(array=line)
             sendto_line = _line[-1]
@@ -382,9 +391,19 @@ class SendToWindow(tk.Frame):
 
 
     def __update_datatable(self):
+        main_record = self.main_tree.item(self.main_tree.focus())['values']
+        tel = main_record[self.record_tel_index]
+        if str(tel)[0] != '0':
+            tel = '0' + str(tel)
+            main_record[self.record_tel_index] = tel
+        selected_base_record = main_record[:4]
         self.main_tree.delete(*self.main_tree.get_children())
         for record in self.data:
-            self.main_tree.insert("","end",values=(record))
+            base_record = record[:4]
+            iid = self.main_tree.insert("","end",values=(record))
+            if selected_base_record == base_record and self.main_tree.exists(iid):
+                self.main_tree.focus(iid)
+                self.main_tree.selection_set(iid)
 
 
 
