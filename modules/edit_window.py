@@ -125,19 +125,21 @@ class EditWindow(tk.Frame):
         self.searched_data = self.data[:]
 
         focused_record = self.datatable.item(self.index)['values']
+        focused_record = self.util.change_all_records_to_str_in_array(array=focused_record)
+        #tel = focused_record[self.record_tel_index]
+        #if str(tel)[0] != '0':
+        #    tel = '0' + str(tel)
+        #    focused_record[self.record_tel_index] = tel
+        focused_sendto_record = focused_record[-1]
         # delete all data and set sorted data
         self.datatable.delete(*self.datatable.get_children())
         g = (d for d in self.data)
         for v in g:
-            self.datatable.insert("","end",values=(v))
-
-        # focus origin selected record
-        focused_record = self.util.change_all_records_to_str_in_array(array=focused_record)
-        tel = focused_record[self.record_tel_index]
-        if str(tel)[0] != '0':
-            tel = '0' + str(tel)
-            focused_record[self.record_tel_index] = tel
-        #self.searched_data
+            sendto_record = v[-1]
+            iid = self.datatable.insert("","end",values=(v))
+            if focused_sendto_record == sendto_record and self.datatable.exists(iid):
+                self.datatable.focus(iid)
+                self.datatable.selection_set(iid)
 
         self.destroy()
 

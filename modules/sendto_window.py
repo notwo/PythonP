@@ -375,7 +375,6 @@ class SendToWindow(tk.Frame):
 
         # update
         g = (d for d in data_for_update)
-        print(new_sendto_record)
         for line in g:
             _line = self.util.change_all_records_to_str_in_array_without_newline(array=line)
             sendto_line = _line[-1]
