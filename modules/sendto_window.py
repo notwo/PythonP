@@ -239,7 +239,10 @@ class SendToWindow(tk.Frame):
 
 
 
+    #
     ##### events #####
+    #
+
     def __setup_sendto_input(self, event, sequential=False):
         # validate
         if not self.__validate_input():
@@ -397,6 +400,7 @@ class SendToWindow(tk.Frame):
         if str(tel)[0] != '0':
             tel = '0' + str(tel)
             main_record[self.record_tel_index] = tel
+        selected_base_record = main_record[:4]
         new_sendto_record = self.__input_record()
         new_main_record = ','.join(main_record)
         # todo: fix magic number
@@ -418,7 +422,11 @@ class SendToWindow(tk.Frame):
                 self.customer_csv.write_all_data(self.data)
                 break
         for record in self.data:
-            self.main_tree.insert("","end",values=(record))
+            base_record = record[:4]
+            iid = self.main_tree.insert("","end",values=(record))
+            if selected_base_record == base_record and self.main_tree.exists(iid):
+                self.main_tree.focus(iid)
+                self.main_tree.selection_set(iid)
 
 
 

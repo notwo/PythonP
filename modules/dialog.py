@@ -368,6 +368,8 @@ class CustomerDialog(tk.Frame):
 
         tree_index = self.tree.index(self.tree.focus())
         target_record = self.customers[tree_index]
+        # todo: fix magic number
+        selected_base_record = target_record[:4]
         if len(target_record) < len(CSV_HEADER.split(',')):
             return
         if not mbox.askokcancel('askokcancel', '選択中の送付先を削除しますがよろしいですか？'):
@@ -401,7 +403,11 @@ class CustomerDialog(tk.Frame):
         # update tree & sendto_tree
         self.tree.delete(*self.tree.get_children())
         for record in self.customers:
-            self.tree.insert("","end",values=(record))
+            base_record = record[:4]
+            iid = self.tree.insert("","end",values=(record))
+            if selected_base_record == base_record and self.tree.exists(iid):
+                self.tree.focus(iid)
+                self.tree.selection_set(iid)
         self.sendto_tree.delete(self.sendto_tree.focus())
         # update csv
         self.customer_csv.write_header()
@@ -421,11 +427,11 @@ class CustomerDialog(tk.Frame):
                 result = re.search(search_word, record[0])
                 if result is not None:
                     self.searched_customers.append(record)
-                    self.tree.insert("", "end", values=(record))
+                    iid = self.tree.insert("", "end", values=(record))
             self.tree.searched_data = self.searched_customers
         else:
             self.searched_customers = []
             for record in self.customers:
                 self.searched_customers.append(record)
-                self.tree.insert("", "end", values=(record))
+                iid = self.tree.insert("", "end", values=(record))
             self.tree.searched_data = self.searched_customers
