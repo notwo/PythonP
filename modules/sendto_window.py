@@ -309,11 +309,11 @@ class SendToWindow(tk.Frame):
     def __update_input(self):
         self.name = self.win.namebox.get().replace(',', '')
         self.namekana = zenhan.h2z(self.win.namekanabox.get().replace(',', ''))
-        self.zipcode1 = self.win.zipcode_box1.get().replace(',', '')
-        self.zipcode2 = self.win.zipcode_box2.get().replace(',', '')
+        self.zipcode1 = zenhan.z2h(self.win.zipcode_box1.get()).replace(',', '')
+        self.zipcode2 = zenhan.z2h(self.win.zipcode_box2.get()).replace(',', '')
         self.address1 = self.win.addressbox.get().replace(',', '')
         self.address2 = self.win.addressbox2.get().replace(',', '')
-        self.tel = self.win.telbox.get()
+        self.tel = zenhan.z2h(self.win.telbox.get())
         self.date = self.win.datebox.get().replace(',', '')
         self.order = self.win.orderbox.get().replace(',', '')
 

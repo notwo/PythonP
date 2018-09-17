@@ -11,8 +11,8 @@ import zenhan
 
 CSV_HEADER = "お客様氏名,郵便番号,住所,電話番号,送り先情報"
 SENDTO_HEADER = "送り先氏名,郵便番号,送り先住所,送り先電話番号,日付,内容"
-COLUMN_WIDTH_LIST = [137, 76, 280, 125, 100]
-SENDTO_COLUMN_WIDTH_LIST = [137, 76, 280, 95, 72, 130]
+COLUMN_WIDTH_LIST = [145, 84, 280, 125, 100]
+SENDTO_COLUMN_WIDTH_LIST = [145, 84, 280, 95, 72, 130]
 RECORD_TEL_INDEX = 3
 OUT_CSV = "customer.csv" 
 
@@ -142,7 +142,7 @@ class CustomerDialog(tk.Frame):
         self.addsendto.bind("<ButtonPress>", self.__add_sendto)
         self.addsendto.pack()
         ### delete button ###
-        self.remove = tk.Button(self.removebutton_frame, text="削除", width=5, height=2, padx=44, pady=1)
+        self.remove = tk.Button(self.removebutton_frame, text="お客様情報を削除", width=5, height=2, padx=44, pady=1)
         self.remove.bind("<ButtonPress>", self.__remove_record)
         self.remove.pack()
         ### delete sendto button ###
@@ -293,11 +293,13 @@ class CustomerDialog(tk.Frame):
 
     def __make_str(self):
         namekana = zenhan.h2z(self.namekanabox.get())
+        zipcode1 = zenhan.z2h(self.zipcode_box1.get())
+        zipcode2 = zenhan.z2h(self.zipcode_box2.get())
+        tel = zenhan.z2h(self.telbox.get())
         result_str = "\n" + \
             self.namebox.get().replace(',', '') + '（' + namekana.replace(',', '') + "）," + \
-            self.zipcode_box1.get().replace(',', '') + "-" + self.zipcode_box2.get().replace(',', '') + "," + \
-            self.addressbox.get().replace(',', '') + "　" + self.addressbox2.get().replace(',', '') + "," + \
-            self.telbox.get()
+            zipcode1.replace(',', '') + "-" + zipcode2.replace(',', '') + "," + \
+            self.addressbox.get().replace(',', '') + "　" + self.addressbox2.get().replace(',', '') + "," + tel
         if self.swin_for_registration is None:
             return result_str
         result_sendto_str = ''

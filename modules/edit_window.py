@@ -114,17 +114,18 @@ class EditWindow(tk.Frame):
         idx_tmp = int(self.index[1:], 16)
         idx = self.__specify_idx(idx_tmp)
         name = self.win.namebox.get().replace(',', '') + '（' + zenhan.h2z(self.win.namekanabox.get().replace(',', '')) + '）'
-        zipcode = self.win.zipcode_box1.get().replace(',', '') + '-' + self.win.zipcode_box2.get().replace(',', '')
+        zipcode = zenhan.z2h(self.win.zipcode_box1.get()).replace(',', '') + '-' + zenhan.z2h(self.win.zipcode_box2.get()).replace(',', '')
         address = self.win.addressbox.get().replace(',', '') + '　' + self.win.addressbox2.get().replace(',', '')
-        tel = self.win.telbox.get()
+        tel = zenhan.z2h(self.win.telbox.get())
+        print(tel)
 
         focused_record = self.datatable.item(self.index)['values']
         focused_record = self.util.change_all_records_to_str_in_array(array=focused_record)
         focused_record = focused_record[:4]
-        tel = focused_record[self.record_tel_index]
-        if str(tel)[0] != '0':
-            tel = '0' + str(tel)
-            focused_record[self.record_tel_index] = tel
+        focused_tel = focused_record[self.record_tel_index]
+        if str(focused_tel)[0] != '0':
+            focused_tel = '0' + str(focused_tel)
+            focused_record[self.record_tel_index] = focused_tel
         # delete all data and set sorted data
         self.datatable.delete(*self.datatable.get_children())
         g = (d for d in self.data)
