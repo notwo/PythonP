@@ -50,7 +50,7 @@ class EditWindow(tk.Frame):
         win.namebox.pack(side="left")
         win.namebox.insert(0, name[0])
         #### name kana ####
-        win.namekanaboxlabel = ttk.Label(win.reg_frame2, text="氏名(フリガナ))", padding=(96, 10, 3, 10))
+        win.namekanaboxlabel = ttk.Label(win.reg_frame2, text="氏名(フリガナ)", padding=(96, 10, 3, 10))
         win.namekanaboxlabel.pack(side="left")
         win.namekanabox = tk.Entry(win.reg_frame2)
         win.namekanabox.pack(side="left")
@@ -109,12 +109,37 @@ class EditWindow(tk.Frame):
     def __update_datatable(self):
         if not self.datatable:
             return
+
+        # write new record
         idx_tmp = int(self.index[1:], 16)
         idx = self.__specify_idx(idx_tmp)
         name = self.win.namebox.get().replace(',', '') + '（' + zenhan.h2z(self.win.namekanabox.get().replace(',', '')) + '）'
         zipcode = self.win.zipcode_box1.get().replace(',', '') + '-' + self.win.zipcode_box2.get().replace(',', '')
         address = self.win.addressbox.get().replace(',', '') + '　' + self.win.addressbox2.get().replace(',', '')
         tel = self.win.telbox.get()
+
+        focused_record = self.datatable.item(self.index)['values']
+        focused_record = self.util.change_all_records_to_str_in_array(array=focused_record)
+        focused_record = focused_record[:4]
+        tel = focused_record[self.record_tel_index]
+        if str(tel)[0] != '0':
+            tel = '0' + str(tel)
+            focused_record[self.record_tel_index] = tel
+        # delete all data and set sorted data
+        self.datatable.delete(*self.datatable.get_children())
+        g = (d for d in self.data)
+        for v in g:
+            base_record = v[:4]
+            if focused_record == self.util.change_all_records_to_str_in_array_without_newline(array=base_record):
+                sendto = v[-1] if len(v) >= self.sendto_record_size else ''
+                record = [name, zipcode, address, tel, sendto]
+                iid = self.datatable.insert("","end",values=(record))
+                if self.datatable.exists(iid):
+                    self.datatable.focus(iid)
+                    self.datatable.selection_set(iid)
+            else:
+                self.datatable.insert("","end",values=(v))
+
         if len(self.data[idx]) >= self.sendto_record_size:
             sendto = self.data[idx][-1]
             self.data[idx] = [name, zipcode, address, tel, sendto]
@@ -123,24 +148,6 @@ class EditWindow(tk.Frame):
                 tel = str(tel) + '\n'
             self.data[idx] = [name, zipcode, address, tel]
         self.searched_data = self.data[:]
-
-        focused_record = self.datatable.item(self.index)['values']
-        focused_record = self.util.change_all_records_to_str_in_array(array=focused_record)
-        #tel = focused_record[self.record_tel_index]
-        #if str(tel)[0] != '0':
-        #    tel = '0' + str(tel)
-        #    focused_record[self.record_tel_index] = tel
-        focused_sendto_record = focused_record[-1]
-        # delete all data and set sorted data
-        self.datatable.delete(*self.datatable.get_children())
-        g = (d for d in self.data)
-        for v in g:
-            sendto_record = v[-1]
-            iid = self.datatable.insert("","end",values=(v))
-            if focused_sendto_record == sendto_record and self.datatable.exists(iid):
-                self.datatable.focus(iid)
-                self.datatable.selection_set(iid)
-
         self.destroy()
 
 
