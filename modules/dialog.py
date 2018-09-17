@@ -27,7 +27,6 @@ class CustomerDialog(tk.Frame):
         self.customers = []
         self.searched_customers = []
         self.search_check = None
-        self.chkval = None
         self.tree = None
         self.sendto_tree = None
         self.customer_csv = csvlib.CustomerCSV(self, key={
@@ -124,11 +123,8 @@ class CustomerDialog(tk.Frame):
         self.searchLabel = ttk.Label(self.search_frame, text="氏名で検索", padding=(115, 10, 3, 10))
         self.searchLabel.pack(side="left")
         self.searchBox = tk.Entry(self.search_frame)
+        self.searchBox.bind('<KeyRelease>', self.__search_by_name)
         self.searchBox.pack(side="left", padx=20)
-        self.chkval = tk.BooleanVar()
-        self.chkval.set(False)
-        self.search_check = ttk.Checkbutton(self.search_frame, text="検索", padding=(0, 10, 10, 1), command=self.__search_by_name, variable=self.chkval)
-        self.search_check.pack(side='left')
         #### order details button ####
         self.sendto = tk.Button(self.button_frame, text="送り先情報を入力する", width=5, height=2, padx=44, pady=1)
         self.sendto.bind("<ButtonPress>", self.__open_sendto_window)
@@ -420,13 +416,11 @@ class CustomerDialog(tk.Frame):
 
 
 
-    def __search_by_name(self):
+    def __search_by_name(self, event):
         search_word = self.searchBox.get()
-        if not search_word:
-            return
         self.tree.delete(*self.tree.get_children())
         g = (d for d in self.customers)
-        if self.chkval.get() is True:
+        if search_word:
             self.searched_customers = []
             for record in self.customers:
                 result = re.search(search_word, record[0])
