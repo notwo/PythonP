@@ -260,8 +260,10 @@ class SendToWindow(tk.Frame):
                 self.__update_csv()
                 self.__update_datatable()
 
-        # close window
+        # close window or continue registration
         if sequential:
+            self.chkval.set(False)
+            self.win.chk_address['variable'] = self.chkval
             self.__register_sendto_collection()
         else:
             self.destroy()
