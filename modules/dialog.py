@@ -375,33 +375,35 @@ class CustomerDialog(tk.Frame):
         if not mbox.askokcancel('askokcancel', '選択中の送付先を削除しますがよろしいですか？'):
             return
         selected_sendto_record = self.sendto_tree.item(self.sendto_tree.focus())['values']
-        selected_sendto_record = self.util.change_all_records_to_str_in_array(array=selected_sendto_record)
+        selected_sendto_record = self.util.change_all_records_to_str_in_array_without_newline(array=selected_sendto_record)
+
         # fix tel if there isnt '0' in the head.
         tel = selected_sendto_record[RECORD_TEL_INDEX]
         if str(tel) != '' and str(tel)[0] != '0':
             tel = '0' + str(tel)
             selected_sendto_record[RECORD_TEL_INDEX] = tel
         selected_sendto_record = '/'.join(selected_sendto_record)
+
         # delete & rewrite self.customers
         sendto_records_str = target_record.pop()
         sendto_records = sendto_records_str.split('|')
         result = ','.join(target_record) + ','
         g = (d for d in sendto_records)
         for sendto_line in g:
-            if (selected_sendto_record != sendto_line):
+            sendto_line_without_new_line = self.util.delete_last_str(sendto_line, '\n')
+            if (selected_sendto_record != sendto_line_without_new_line):
                 result += sendto_line + '|'
         result = self.util.delete_last_str(result, '|')
         if len(sendto_records) <= 1:
             result = result[:-1]
         self.customers[tree_index] = result.split(',')
-        if len(self.customers[tree_index]) < len(COLUMN_WIDTH_LIST):
-            tel = self.customers[tree_index][RECORD_TEL_INDEX]
-            if str(tel)[-1] != '\n':
-                tel = str(tel) + '\n'
-                self.customers[tree_index][RECORD_TEL_INDEX] = tel
+        if self.customers[tree_index][-1][-1] != '\n':
+            self.customers[tree_index][-1] += '\n'
         self.searched_customers = self.customers[:]
+
         # update tree & sendto_tree
         self.tree.delete(*self.tree.get_children())
+        # focus record
         for record in self.customers:
             base_record = record[:4]
             iid = self.tree.insert("","end",values=(record))
@@ -409,6 +411,7 @@ class CustomerDialog(tk.Frame):
                 self.tree.focus(iid)
                 self.tree.selection_set(iid)
         self.sendto_tree.delete(self.sendto_tree.focus())
+
         # update csv
         self.customer_csv.write_header()
         self.customer_csv.write_all_data(self.customers)
