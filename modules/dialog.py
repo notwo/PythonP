@@ -10,9 +10,9 @@ import re
 import zenhan
 
 CSV_HEADER = "お客様氏名,郵便番号,住所,電話番号,送り先情報"
-SENDTO_HEADER = "送り先氏名,郵便番号,送り先住所,送り先電話番号,日付,内容"
-COLUMN_WIDTH_LIST = [145, 84, 280, 125, 100]
-SENDTO_COLUMN_WIDTH_LIST = [145, 84, 280, 95, 72, 130]
+SENDTO_HEADER = "送り先氏名,郵便番号,送り先住所,送り先電話番号,発送日,内容"
+COLUMN_WIDTH_LIST = [145, 84, 280, 125, 40]
+SENDTO_COLUMN_WIDTH_LIST = [145, 84, 280, 95, 122, 500]
 RECORD_TEL_INDEX = 3
 OUT_CSV = "customer.csv" 
 
@@ -187,6 +187,9 @@ class CustomerDialog(tk.Frame):
         })
         self.tree.pack()
         self.sendto_tree.pack()
+        hscrollbar = ttk.Scrollbar(self.sendto_tree_frame, orient = tk.HORIZONTAL, command=self.sendto_tree.xview)
+        hscrollbar.pack(fill='x')
+        self.sendto_tree.configure(xscrollcommand=lambda f, l: hscrollbar.set(f, l))
         self.sendto_tree.pass_tree(self.tree)
 
 
