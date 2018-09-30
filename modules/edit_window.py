@@ -129,6 +129,10 @@ class EditWindow(tk.Frame):
         self.datatable.delete(*self.datatable.get_children())
         g = (d for d in self.data)
         for v in g:
+            # if searching, only searched data will be added.
+            if (self.data != self.searched_data) and (v not in self.searched_data):
+                continue
+
             base_record = v[:4]
             if focused_record == self.util.change_all_records_to_str_in_array_without_newline(array=base_record):
                 sendto = v[-1] if len(v) >= self.sendto_record_size else ''

@@ -118,7 +118,7 @@ class SendToWindow(tk.Frame):
             tel = '0' + str(tel)
         win.telbox.insert(0, tel)
         #### date ####
-        win.dateboxLabel = ttk.Label(win.reg_frame8, text="発送日", padding=(138, 10, 3, 10))
+        win.dateboxLabel = ttk.Label(win.reg_frame8, text="発送日", padding=(126, 10, 3, 10))
         win.dateboxLabel.pack(side="left")
         win.datebox = tk.Entry(win.reg_frame8)
         win.datebox.pack(side="left")
@@ -359,18 +359,34 @@ class SendToWindow(tk.Frame):
         change_target_record = self.util.change_all_records_to_str_in_array_without_newline(array=change_target_record)
         new_record = self.__input_record()
         sendto_record = main_record[-1]
+
+        print("self.searched_data")
+        print(self.searched_data)
+        searched_sendto_record = []
+        g = (d for d in self.searched_data)
+        for v in g:
+            if len(v) >= 5:
+                sendto = v[-1]
+                searched_sendto_record.append(sendto)
+
         new_sendto_record = []
         g = (d for d in sendto_record.split('|'))
         for record_str in g:
             record = record_str.split('/')
             if change_target_record == record:
                 new_sendto_record.append('/'.join(new_record))
+                # if searching, only searched data will be added.
+                if (self.data != self.searched_data) and (record not in searched_sendto_record):
+                    continue
                 iid = self.datatable.insert("","end",values=new_record)
                 if selected_sendto_record == record and self.datatable.exists(iid):
                     self.datatable.focus(iid)
                     self.datatable.selection_set(iid)
             else:
                 new_sendto_record.append('/'.join(record))
+                # if searching, only searched data will be added.
+                if (self.data != self.searched_data) and (record not in searched_sendto_record):
+                    continue
                 self.datatable.insert("","end",values=record)
         # make deep copy of self.data.
         data_for_update = self.data[:]

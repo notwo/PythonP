@@ -166,6 +166,7 @@ class CustomerDialog(tk.Frame):
             'search_on': False, \
             'headings': SENDTO_HEADER.split(','), \
             'data': self.customers, \
+            'searched_data': self.searched_customers, \
             'customer_csv': self.customer_csv, \
             'record_tel_index': RECORD_TEL_INDEX, \
         })
@@ -421,18 +422,19 @@ class CustomerDialog(tk.Frame):
 
     def __search_by_name(self, event):
         search_word = self.searchBox.get()
+        self.sendto_tree.delete(*self.sendto_tree.get_children())
         self.tree.delete(*self.tree.get_children())
-        g = (d for d in self.customers)
         if search_word:
             self.searched_customers = []
             for record in self.customers:
-                result = re.search(search_word, record[0])
+                name = record[0]
+                result = re.search(search_word, name)
                 if result is not None:
                     self.searched_customers.append(record)
-                    iid = self.tree.insert("", "end", values=(record))
+                    self.tree.insert("", "end", values=(record))
         else:
             self.searched_customers = []
             for record in self.customers:
                 self.searched_customers.append(record)
-                iid = self.tree.insert("", "end", values=(record))
+                self.tree.insert("", "end", values=(record))
         self.tree.searched_data = self.searched_customers
