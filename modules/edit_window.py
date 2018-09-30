@@ -117,7 +117,6 @@ class EditWindow(tk.Frame):
         zipcode = zenhan.z2h(self.win.zipcode_box1.get()).replace(',', '') + '-' + zenhan.z2h(self.win.zipcode_box2.get()).replace(',', '')
         address = self.win.addressbox.get().replace(',', '') + '　' + self.win.addressbox2.get().replace(',', '')
         tel = zenhan.z2h(self.win.telbox.get())
-        print(tel)
 
         focused_record = self.datatable.item(self.index)['values']
         focused_record = self.util.change_all_records_to_str_in_array(array=focused_record)

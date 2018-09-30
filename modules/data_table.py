@@ -143,20 +143,21 @@ class DataTable(ttk.Treeview):
     def __sort(self):
         if not self.search_on:
             return
-        # sort
+        # sorted data
         val = []
         hash_for_sort = {}
 
+        # specify clicked header and sort
         x = self.winfo_pointerx() - self.winfo_rootx()
         column = self.identify_column(x)
         sort_num = int(column[1:])
+
         # change sort mode
         if self.sort_mode[sort_num - 1] == 'asc':
             self.sort_mode[sort_num - 1] = 'desc'
         else:
             self.sort_mode[sort_num - 1] = 'asc'
 
-        # specify clicked header and sort
         g = (d for d in self.searched_data)
         for row in g:
             v = row[sort_num - 1]

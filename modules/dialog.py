@@ -430,10 +430,9 @@ class CustomerDialog(tk.Frame):
                 if result is not None:
                     self.searched_customers.append(record)
                     iid = self.tree.insert("", "end", values=(record))
-            self.tree.searched_data = self.searched_customers
         else:
             self.searched_customers = []
             for record in self.customers:
                 self.searched_customers.append(record)
                 iid = self.tree.insert("", "end", values=(record))
-            self.tree.searched_data = self.searched_customers
+        self.tree.searched_data = self.searched_customers
