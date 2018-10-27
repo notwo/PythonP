@@ -110,9 +110,7 @@ class EditWindow(tk.Frame):
         if not self.datatable:
             return
 
-        # write new record
-        idx_tmp = int(self.index[1:], 16)
-        idx = self.__specify_idx(idx_tmp)
+        # prepare new record
         name = self.win.namebox.get().replace(',', '') + '（' + zenhan.h2z(self.win.namekanabox.get().replace(',', '')) + '）'
         zipcode = zenhan.z2h(self.win.zipcode_box1.get()).replace(',', '') + '-' + zenhan.z2h(self.win.zipcode_box2.get()).replace(',', '')
         address = self.win.addressbox.get().replace(',', '') + '　' + self.win.addressbox2.get().replace(',', '')
@@ -120,21 +118,22 @@ class EditWindow(tk.Frame):
 
         focused_record = self.datatable.item(self.index)['values']
         focused_record = self.util.change_all_records_to_str_in_array(array=focused_record)
-        focused_record = focused_record[:4]
+        #focused_record = focused_record[:4]
         focused_tel = focused_record[self.record_tel_index]
         if str(focused_tel)[0] != '0':
             focused_tel = '0' + str(focused_tel)
             focused_record[self.record_tel_index] = focused_tel
         # delete all data and set sorted data
         self.datatable.delete(*self.datatable.get_children())
+
+        idx = self.data.index(focused_record)
         g = (d for d in self.data)
         for v in g:
             # if searching, only searched data will be added.
             if (self.data != self.searched_data) and (v not in self.searched_data):
                 continue
 
-            base_record = v[:4]
-            if focused_record == self.util.change_all_records_to_str_in_array_without_newline(array=base_record):
+            if focused_record == v:
                 sendto = v[-1] if len(v) >= self.sendto_record_size else ''
                 record = [name, zipcode, address, tel, sendto]
                 iid = self.datatable.insert("","end",values=(record))
@@ -162,15 +161,8 @@ class EditWindow(tk.Frame):
 
 
 
-    def __specify_idx(self, idx_tmp):
-        if idx_tmp > len(self.data):
-            if idx_tmp % len(self.data) == 0:
-                idx = len(self.data) - 1
-            else:
-                idx = idx_tmp % len(self.data) - 1
-        else:
-            idx = idx_tmp - 1
-        return idx
+    def __specify_data_idx(self, record):
+        pass
 
 
 
