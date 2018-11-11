@@ -118,7 +118,6 @@ class EditWindow(tk.Frame):
 
         focused_record = self.datatable.item(self.index)['values']
         focused_record = self.util.change_all_records_to_str_in_array(array=focused_record)
-        #focused_record = focused_record[:4]
         focused_tel = focused_record[self.record_tel_index]
         if str(focused_tel)[0] != '0':
             focused_tel = '0' + str(focused_tel)
@@ -158,11 +157,6 @@ class EditWindow(tk.Frame):
     def __update_csv(self):
         self.customer_csv.write_header()
         self.customer_csv.write_all_data(self.data)
-
-
-
-    def __specify_data_idx(self, record):
-        pass
 
 
 

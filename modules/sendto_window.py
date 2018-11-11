@@ -338,19 +338,20 @@ class SendToWindow(tk.Frame):
     def __update_csv(self):
         if not self.datatable:
             return
-        change_target_record_index = self.datatable.focus()
-        change_target_record = self.datatable.item(change_target_record_index)['values']
         main_record = self.main_tree.item(self.main_tree.focus())['values']
-        selected_sendto_index = self.datatable.focus()
-        selected_sendto_record = self.datatable.item(selected_sendto_index)['values']
+        if len(main_record) < 5:
+            return
+
+        change_target_record = self.datatable.item(self.datatable.focus())['values']
+        selected_sendto_record = self.datatable.item(self.datatable.focus())['values']
+
         sendto_tel = selected_sendto_record[self.record_tel_index]
         if str(sendto_tel)[0] != '0':
             sendto_tel = '0' + str(sendto_tel)
             selected_sendto_record[self.record_tel_index] = sendto_tel
-        if len(main_record) < 5:
-            return
         children = self.datatable.get_children()
         self.datatable.delete(*children)
+
         main_record = self.util.change_all_records_to_str_in_array_without_newline(array=main_record)
         tel = change_target_record[self.record_tel_index]
         if str(tel)[0] != '0':
@@ -360,8 +361,6 @@ class SendToWindow(tk.Frame):
         new_record = self.__input_record()
         sendto_record = main_record[-1]
 
-        print("self.searched_data")
-        print(self.searched_data)
         searched_sendto_record = []
         g = (d for d in self.searched_data)
         for v in g:
