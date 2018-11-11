@@ -132,7 +132,7 @@ class EditWindow(tk.Frame):
         g = (d for d in self.data)
         for v in g:
             # if searching, only searched data will be added.
-            if (self.data != self.searched_data) and (v not in self.searched_data):
+            if self.datatable.searching and (v not in self.searched_data):
                 continue
 
             if focused_record == v:
