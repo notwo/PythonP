@@ -425,6 +425,7 @@ class CustomerDialog(tk.Frame):
         self.sendto_tree.delete(*self.sendto_tree.get_children())
         self.tree.delete(*self.tree.get_children())
         if search_word:
+            self.sendto_tree.searching = True
             self.searched_customers = []
             for record in self.customers:
                 name = record[0]
@@ -434,6 +435,7 @@ class CustomerDialog(tk.Frame):
                     self.tree.insert("", "end", values=(record))
         else:
             self.searched_customers = []
+            self.sendto_tree.searching = False
             for record in self.customers:
                 self.searched_customers.append(record)
                 self.tree.insert("", "end", values=(record))

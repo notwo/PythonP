@@ -22,6 +22,7 @@ class DataTable(ttk.Treeview):
         self.customer_csv = key.get('key').get('customer_csv')
         self.sendto_length = key.get('key').get('sendto_length')
         self.sendto_tree = key.get('key').get('sendto_tree')
+        self.searching = False
         if len(column_width) != self.size or len(self.headings) != self.size:
             return
         self["columns"] = list(range(1, self.size + 1))

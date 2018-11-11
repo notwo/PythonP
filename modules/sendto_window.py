@@ -369,13 +369,14 @@ class SendToWindow(tk.Frame):
                 searched_sendto_record.append(sendto)
 
         new_sendto_record = []
+        selected_sendto_record = self.util.change_all_records_to_str_in_array_without_newline(selected_sendto_record)
         g = (d for d in sendto_record.split('|'))
         for record_str in g:
             record = record_str.split('/')
             if change_target_record == record:
                 new_sendto_record.append('/'.join(new_record))
                 # if searching, only searched data will be added.
-                if (self.data != self.searched_data) and (record not in searched_sendto_record):
+                if self.datatable.searching and (record not in searched_sendto_record):
                     continue
                 iid = self.datatable.insert("","end",values=new_record)
                 if selected_sendto_record == record and self.datatable.exists(iid):
@@ -384,7 +385,7 @@ class SendToWindow(tk.Frame):
             else:
                 new_sendto_record.append('/'.join(record))
                 # if searching, only searched data will be added.
-                if (self.data != self.searched_data) and (record not in searched_sendto_record):
+                if self.datatable.searching and (record not in searched_sendto_record):
                     continue
                 self.datatable.insert("","end",values=record)
         # make deep copy of self.data.
@@ -468,3 +469,11 @@ class SendToWindow(tk.Frame):
     def __close_window(self, event):
         self.reset_sendto_collection_input()
         self.destroy()
+
+    # for debug
+    def __array_diff(self, arr1, arr2):
+        for v in arr1:
+            if v not in arr2:
+                index = arr1.index(v)
+                print(v)
+                print(arr2[index])
