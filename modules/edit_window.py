@@ -122,6 +122,9 @@ class EditWindow(tk.Frame):
         if str(focused_tel)[0] != '0':
             focused_tel = '0' + str(focused_tel)
             focused_record[self.record_tel_index] = focused_tel
+        # compensate line break
+        if focused_record[-1][-1:] != '\n':
+            focused_record[-1] += '\n'
         # delete all data and set sorted data
         self.datatable.delete(*self.datatable.get_children())
 
